@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>易直播</title>
+   
+    <!-- Import style -->
+    <link rel="stylesheet" href="css/element-plus.css" />
+    <!-- Import Vue  -->
+    <script src="js/vue.global.prod.js"></script>
+    <!-- Import component library -->
+    <script src="js/element-plus.js"></script>
+
+    <!-- Import iconfont -->
+    <link rel="stylesheet" href="./assets/iconfont/iconfont.css" />
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="./css/app.css"></link>
+    <!-- 引入组件 -->
+    <script src="./components/IntelligentCustomerService.js"></script>
+    <script src="./components/lodingIcon/index.js"></script>
+    <script src="./components/serviceTrainingLibrary/index.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/newFAQ.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/asyncFAQ.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/splitQA.js"></script>
+  </head>
+
+
+  <body>
+    <div style="width: 100%" id="app">
+      <intelligent-customer-service></intelligent-customer-service>
+    </div>
+  </body>
+</html>
+
+<!-- 引入组件文件 -->
+<script>
+  Object.assign(window, Vue);
+
+  const vue3Composition = {};
+
+  const app = createApp(vue3Composition)
+    .component("intelligent-customer-service", IntelligentCustomerService)
+    .component("service-training-library", serviceTrainingLibrary)
+    .component("new-faq", newFAQ)
+    .component("async-faq", asyncFAQ)
+    .component("split-qa", splitQA)
+    .component("loading-icon", loadingIcon)
+    .use(ElementPlus)
+    .mount("#app"); //初始化
+</script>

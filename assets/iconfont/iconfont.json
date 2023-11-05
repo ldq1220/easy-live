@@ -1,0 +1,114 @@
+{
+  "id": "4316526",
+  "name": "易直播-智能客服",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "易直播-智能客服 模块",
+  "glyphs": [
+    {
+      "icon_id": "1239930",
+      "name": "加载",
+      "font_class": "jiazai",
+      "unicode": "e699",
+      "unicode_decimal": 59033
+    },
+    {
+      "icon_id": "8758500",
+      "name": "沙漏",
+      "font_class": "shalou2",
+      "unicode": "e6c2",
+      "unicode_decimal": 59074
+    },
+    {
+      "icon_id": "6056160",
+      "name": "沙漏",
+      "font_class": "shalou",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
+      "icon_id": "24732547",
+      "name": "沙漏",
+      "font_class": "shalou1",
+      "unicode": "ecad",
+      "unicode_decimal": 60589
+    },
+    {
+      "icon_id": "6978115",
+      "name": "上传",
+      "font_class": "shangchuan",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "11882898",
+      "name": "bg-upload",
+      "font_class": "bg-upload",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "577319",
+      "name": "问号",
+      "font_class": "wenhao",
+      "unicode": "e72d",
+      "unicode_decimal": 59181
+    },
+    {
+      "icon_id": "577357",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e74b",
+      "unicode_decimal": 59211
+    },
+    {
+      "icon_id": "1727425",
+      "name": "206搜索",
+      "font_class": "sousuo",
+      "unicode": "e8ba",
+      "unicode_decimal": 59578
+    },
+    {
+      "icon_id": "3868273",
+      "name": "警告",
+      "font_class": "jinggao",
+      "unicode": "eb65",
+      "unicode_decimal": 60261
+    },
+    {
+      "icon_id": "5086088",
+      "name": "新建",
+      "font_class": "xinjian",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "7511483",
+      "name": "靶心",
+      "font_class": "baxin",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "13648312",
+      "name": "数据同步.svg",
+      "font_class": "shujutongbusvg",
+      "unicode": "e69b",
+      "unicode_decimal": 59035
+    },
+    {
+      "icon_id": "27402416",
+      "name": "同步",
+      "font_class": "tongbu",
+      "unicode": "ee18",
+      "unicode_decimal": 60952
+    },
+    {
+      "icon_id": "29251516",
+      "name": "拆分",
+      "font_class": "chaifen",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4316526 */
+  src: url('iconfont.woff2?t=1699178661599') format('woff2'),
+       url('iconfont.woff?t=1699178661599') format('woff'),
+       url('iconfont.ttf?t=1699178661599') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-jiazai:before {
+  content: "\e699";
+}
+
+.icon-shalou2:before {
+  content: "\e6c2";
+}
+
+.icon-shalou:before {
+  content: "\e66f";
+}
+
+.icon-shalou1:before {
+  content: "\ecad";
+}
+
+.icon-shangchuan:before {
+  content: "\e62a";
+}
+
+.icon-bg-upload:before {
+  content: "\e645";
+}
+
+.icon-wenhao:before {
+  content: "\e72d";
+}
+
+.icon-shanchu:before {
+  content: "\e74b";
+}
+
+.icon-sousuo:before {
+  content: "\e8ba";
+}
+
+.icon-jinggao:before {
+  content: "\eb65";
+}
+
+.icon-xinjian:before {
+  content: "\e64d";
+}
+
+.icon-baxin:before {
+  content: "\e61c";
+}
+
+.icon-shujutongbusvg:before {
+  content: "\e69b";
+}
+
+.icon-tongbu:before {
+  content: "\ee18";
+}
+
+.icon-chaifen:before {
+  content: "\e661";
+}
+

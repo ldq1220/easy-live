@@ -1,0 +1,29 @@
+/* 智能客服 */
+.intelligent_customer_service_box {
+  padding: 20px;
+}
+
+.intelligent_customer_service_content {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 40px;
+}
+
+/* 客服训练库 */
+.service_training_library .table_content {
+  height: 50px;
+  line-height: 50px;
+}
+.service_training_library .service_training_library_header {
+  margin-bottom: 20px;
+}
+
+.new_faq_dialog_footer i {
+  font-size: 14px;
+  color: #808080;
+}
+
+.upload_text {
+  display: block;
+  padding: 10px;
+}
