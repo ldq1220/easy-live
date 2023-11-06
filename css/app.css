@@ -6,6 +6,7 @@
 
 body {
   background-color: #efefef;
+  font-size: 14px;
 }
 
 .flex {
@@ -13,12 +14,22 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+.flex2 {
+  display: flex;
+  align-items: center;
+}
 
 i.icon {
   margin-right: 8px;
 }
 .cursor {
   cursor: pointer;
+}
+.font_weight {
+  font-weight: bold;
+}
+.flex_start {
+  align-items: flex-start;
 }
 
 /* 弹窗el-dialog__body */

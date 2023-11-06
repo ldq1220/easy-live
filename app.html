@@ -12,6 +12,7 @@
     <script src="js/vue.global.prod.js"></script>
     <!-- Import component library -->
     <script src="js/element-plus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 
     <!-- Import iconfont -->
     <link rel="stylesheet" href="./assets/iconfont/iconfont.css" />
@@ -24,6 +25,9 @@
     <script src="./components/serviceTrainingLibrary/components/newFAQ.js"></script>
     <script src="./components/serviceTrainingLibrary/components/asyncFAQ.js"></script>
     <script src="./components/serviceTrainingLibrary/components/splitQA.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/tableItemDetial.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/faqAddEditDialog.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/systemFaqDrill.js"></script>
   </head>
 
 
@@ -38,7 +42,19 @@
 <script>
   Object.assign(window, Vue);
 
-  const vue3Composition = {};
+  const vue3Composition = {
+
+    // axios.get(
+    //   "http://192.168.11.190:3000/api/core/dataset/collection/detail?id=654390729b20d18dfc671436",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization:
+    //         "Bearer fastgpt-na7pmQifbsBgAP5Rkh6Jcilu3PjgM-65430f9ea65eb65ef0301fb7",
+    //     },
+    //   }
+    // );
+  };
 
   const app = createApp(vue3Composition)
     .component("intelligent-customer-service", IntelligentCustomerService)
@@ -47,6 +63,9 @@
     .component("async-faq", asyncFAQ)
     .component("split-qa", splitQA)
     .component("loading-icon", loadingIcon)
+    .component("table-item-detial", tableItemDetial)
+    .component("faq-add-edit-dialog", faqAddEditDialog)
+    .component("system-faq-dirll", systemFaqDrill)
     .use(ElementPlus)
     .mount("#app"); //初始化
 </script>

@@ -2,10 +2,8 @@ const serviceTrainingLibrary = {
   template: `
       <div class="service_training_library">
         <div class="service_training_library_header flex space_between">
-            <el-button type="primary" @click="abc">
-                <i class="iconfont icon-baxin icon"></i>系统问答库训练
-            </el-button>
-            <loading-icon></loading-icon>
+            <system-faq-dirll></system-faq-dirll>
+            
             <div class="flex">
                 <el-input v-model="searchValue" class="w-50 m-2" placeholder="搜索" style="margin-right:20px">
                     <template #prefix>
@@ -31,8 +29,8 @@ const serviceTrainingLibrary = {
             </div>
         </div>
 
-        <div class="service_training_library_table">
-            <el-table :data="tableData"  style="width: 100%" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
+        <div class="service_training_library_table" v-if="!showDetail">
+            <el-table :data="tableData" row-class-name="table_row_item cursor"  style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
                 <el-table-column prop="index" label="#" />
                 <el-table-column prop="name" label="名称" />
                 <el-table-column prop="dataSum" label="数据总量" />
@@ -52,6 +50,7 @@ const serviceTrainingLibrary = {
       <async-faq :dialogVisible="asyncFaqDialogVisible" @closenewfaq="closeNewFAQ"></async-faq>
       <split-qa :dialogVisible="splitQaDialogVisible" @closenewfaq="closeNewFAQ"></split-qa>
       
+      <table-item-detial />
     `,
 
   data() {
@@ -77,6 +76,7 @@ const serviceTrainingLibrary = {
       newFaqDialogVisible: false,
       asyncFaqDialogVisible: false,
       splitQaDialogVisible: false,
+      showDetail: false,
     };
   },
   mounted() {
@@ -99,6 +99,11 @@ const serviceTrainingLibrary = {
       this.newFaqDialogVisible = false;
       this.asyncFaqDialogVisible = false;
       this.splitQaDialogVisible = false;
+    },
+    // 点击表格某一行
+    imgSelected(row, event, column) {
+      //点击获取索引
+      console.log(row);
     },
   },
 };

@@ -27,3 +27,135 @@
   display: block;
   padding: 10px;
 }
+
+/* 列表项 详情 */
+.table_item_detial .return {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  margin: 20px 0;
+}
+.table_item_detial .return i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+.table_item_detial .completeness {
+  margin-left: 100px;
+}
+.table_item_detial_header {
+  margin-bottom: 40px;
+}
+.completeness_text {
+  font-size: 14px;
+  margin-right: 20px;
+}
+.completeness .el-progress__text span {
+  font-size: 14px;
+}
+
+.table_item_detial_body {
+  flex-wrap: wrap;
+}
+.body_item_card {
+  position: relative;
+  cursor: pointer;
+  /* width: 330px; */
+  width: 30%;
+  height: 223px;
+  transition: all 0.3s;
+  margin-bottom: 50px;
+}
+.body_item_card .el-card {
+  height: 223px;
+}
+.body_item_card:hover {
+  transform: translateY(-4px);
+}
+.content_answers {
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card_content_footer {
+  position: absolute;
+  width: calc(100% - 40px);
+  display: flex;
+  justify-content: space-between;
+  left: 20px;
+  bottom: 10px;
+}
+.card_content_footer_detial_icon {
+  width: 41px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background-color: rgba(245, 245, 245, 1);
+  border-radius: 4px;
+  display: none;
+}
+.card_content_footer span,
+.card_content_footer i {
+  font-weight: bold;
+  color: #808080;
+}
+
+.card_content_footer .card_content_footer_detial_icon:hover i {
+  color: #fd4d4f;
+}
+.body_item_card:hover .card_content_footer_detial_icon {
+  display: block;
+}
+
+/* 问答图标 */
+.circle {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #fff;
+  text-align: center;
+  line-height: 24px;
+  font-size: 12px;
+}
+.circle.faq {
+  background-color: rgba(122, 194, 154, 1);
+}
+
+/* 添加问答 || 修改问答 */
+.faq_add_edit_dialog_content.flex {
+  align-items: baseline;
+}
+.flex.answer {
+  align-items: flex-start;
+}
+.faq_form_item.question {
+  padding-bottom: 40px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.faq_form_item.answer {
+  padding-top: 20px;
+}
+.circle.zn {
+  background-color: #68b3c8;
+}
+.circle.en {
+  background-color: #f3bb45;
+}
+
+.footer_tooltip {
+  font-size: 14px;
+  color: #808080;
+}
+
+/* 系统问答库弹窗 */
+.system_faq_drill_completeness {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
