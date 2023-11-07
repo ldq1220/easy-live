@@ -32,15 +32,21 @@ const serviceTrainingLibrary = {
         </div>
 
         <div class="service_training_library_table" v-if="!showDetail">
-            <el-table :data="tableData" row-class-name="table_row_item cursor"  style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
-                <el-table-column prop="index" label="#" />
-                <el-table-column prop="name" label="名称" />
-                <el-table-column prop="dataSum" label="数据总量" />
-                <el-table-column prop="time" label="时间" />
-                <el-table-column prop="status" label="状态" />
-                <el-table-column prop="status" label="操作">
+            <el-table :data="tableData" row-class-name="table_row_item cursor"  height="400" style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
+                <el-table-column type="index" label="#" align="center" />
+                <el-table-column prop="name" label="名称" align="center" />
+                <el-table-column prop="dataAmount" label="数据总量" align="center" />
+                <el-table-column prop="updateTime" label="时间" align="center" />
+                <el-table-column prop="trainingAmount" label="状态" align="center">
+                  <template #default="scope">
+                    <div style="height:50px;line-height:50px ;">
+                      {{scope.row.trainingAmount == 0?'已就绪': scope.row.trainingAmount + '索引中'}}
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column  label="操作" align="center">
                     <template #default="scope">
-                        <div class="iconfont icon-shanchu cursor table_content" style="color:#FD4D4F;"></div>
+                        <i class="iconfont icon-shanchu cursor table_content" style="color:#FD4D4F;" v-if="!scope.row.isSystem"></i>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,22 +65,7 @@ const serviceTrainingLibrary = {
     return {
       activeName: "first",
       searchValue: "", // 搜索框 value
-      tableData: [
-        {
-          index: "1",
-          name: "系统问答库",
-          dataSum: "100",
-          time: "2023-9-27 10:20",
-          status: "已就绪",
-        },
-        {
-          index: "2",
-          name: "手动录入",
-          dataSum: "0",
-          time: "2023-9-27 10:20",
-          status: "索引中",
-        },
-      ],
+      tableData: [],
       newFaqDialogVisible: false,
       asyncFaqDialogVisible: false,
       splitQaDialogVisible: false,
@@ -85,8 +76,26 @@ const serviceTrainingLibrary = {
   },
   mounted() {
     console.log("智能客服库组件挂载啦！！！！");
+    this.getDatasetList(); // 获取数据集列表
   },
   methods: {
+    // 获取数据集列表
+    async getDatasetList() {
+      let res = await getList({
+        pageNum: 1,
+        pageSize: 10,
+        datasetId: "654a0e916bcc679370ccbef8",
+      });
+      const { code, data } = res;
+      if (code == 200) {
+        data.data.forEach((item) => {
+          item.updateTime = dayjs(item.updateTime).format(
+            "YYYY-MM-DD HH:mm:ss"
+          );
+        });
+        this.tableData = data.data;
+      }
+    },
     handleClick() {
       this.$emit("fatherEmit", "this.data");
     },

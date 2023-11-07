@@ -1,6 +1,6 @@
 const IntelligentCustomerService = {
   template: `
-    <initialize v-if="isInitialize"/>
+    <initialize v-if="isInitialize" />
 
     <div class="intelligent_customer_service_box" v-if="!isInitialize">
         <el-tabs v-model="activeName" class="demo-tabs">
@@ -25,9 +25,14 @@ const IntelligentCustomerService = {
 
   data() {
     return {
-      activeName: "third",
-      isInitialize: false, // 是 初始化
+      activeName: "first",
+      isInitialize: true, // 是 初始化
     };
+  },
+  mounted() {
+    setTimeout(() => {
+      this.isInitialize = false;
+    }, 500);
   },
   methods: {
     dialog() {

@@ -1,5 +1,6 @@
 const advancedSetup = {
   template: `
+  <el-scrollbar height="700px">
       <div class="advanced_setup_box">
         <div class="advanced_setup_title">
             <i class="iconfont icon-icon"></i>
@@ -68,6 +69,7 @@ const advancedSetup = {
             </div>
         </div>
       </div>
+    </el-scrollbar> 
     `,
 
   data() {

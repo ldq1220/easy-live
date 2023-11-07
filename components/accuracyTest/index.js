@@ -1,5 +1,6 @@
 const accuracyTest = {
   template: `
+  <el-scrollbar height="700px">
       <div class="accuracy_box">
         <div class="header_tooltip">
             <i class="iconfont icon-icon"></i>
@@ -74,6 +75,7 @@ const accuracyTest = {
           </div>
         </div>
       </div>
+    </el-scrollbar> 
     `,
 
   data() {
