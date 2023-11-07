@@ -1,0 +1,93 @@
+/* 准确度测试 */
+.accuracy_test {
+  padding: 20px 40px;
+}
+.accuracy_box .header_tooltip {
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 20px 5px 5px;
+  border: 1px solid #ccc;
+  border-radius: 40px;
+  box-shadow: 3px 3px 3px #ccc;
+}
+
+/* 问答区域 */
+.accuracy_faq {
+  margin: 20px 0;
+  padding: 20px 60px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+.accuracy_faq .questions_form {
+  flex-grow: 1;
+}
+.accuracy_faq .answer_content {
+  flex-grow: 1;
+}
+.answer_content_text {
+  margin-top: 10px;
+  color: #808080;
+}
+.answer_content.isEN {
+  margin-left: 16px;
+}
+.accuracy_faq .accuracy_faq_item {
+  width: 45%;
+}
+.accuracy_questions_input {
+  margin: 10px 0;
+}
+.accuracy_questions_input textarea {
+  resize: none;
+}
+.views_translate {
+  cursor: pointer;
+}
+.views_translate:hover {
+  color: #7ac29a;
+}
+
+/* 测试结果分析 */
+.test_result_analyse {
+  padding: 30px 60px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+.test_result_analyse_title {
+  margin-bottom: 20px;
+}
+
+.test_result_analyse_content_item {
+  width: calc(45% - 40px);
+  height: 240px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-left: 40px;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #808080;
+  margin-bottom: 40px;
+}
+.test_result_analyse_content_item_questions {
+  padding: 20px 0 14px 0;
+  border-bottom: 1px solid #ccc;
+}
+.test_result_analyse_content_item_questions .questions_text,
+.test_result_analyse_content_item_answer .answer_text {
+  color: #333;
+  font-weight: bold;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.test_result_analyse_content_item_answer {
+  margin-top: 14px;
+  color: #808080;
+}
+.test_result_analyse_content_item_answer .answer_text {
+  -webkit-line-clamp: 5;
+  color: #808080;
+}

@@ -1,0 +1,25 @@
+.initialize_box {
+  position: relative;
+  width: 662px;
+  height: 326px;
+  line-height: 20px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 1);
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.initialize_box .loading_icon_box {
+  text-align: center;
+  margin: 0px auto 50px;
+}
+.initialize_box .initialize_content {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  color: #333;
+}

@@ -1,10 +1,6 @@
-const systemFaqDrill = {
+const systemFaqDrillDialog = {
   template: `
-            <el-button type="primary" @click="openDialog">
-              <i class="iconfont icon-baxin icon"></i>系统问答库训练
-            </el-button>
-
-            <el-dialog v-model="visiable" title="系统问答库" width="827px" @open="openDialog" @close="closeDialog">
+            <el-dialog v-model="dialogVisible" title="系统问答库" width="827px" @open="openDialog" @close="closeDialog">
                 <div class="system_faq_drill_completeness flex2">
                   <span class="completeness_text">完成度</span>
                   <el-progress :percentage="90"  :stroke-width="16" color="#67C23A" style="width:300px" />
@@ -82,9 +78,7 @@ const systemFaqDrill = {
                     </div>
                     <div>
                       <el-button type="info" @click="closeDialog">退出训练</el-button>
-                      <el-button type="primary" @click="closeDialog">
-                        确认
-                      </el-button>
+                      <el-button type="primary" @click="closeDialog">加入问答库</el-button>
                       <el-button @click="closeDialog">跳过</el-button>
                       <el-radio-group v-model="sortRadio" class="ml-4" style="margin-left:10px">
                           <el-radio :label="0" size="large">按编号</el-radio>
@@ -113,11 +107,8 @@ const systemFaqDrill = {
   },
   props: ["dialogVisible", "type"],
   methods: {
-    openDialog() {
-      this.visiable = true;
-    },
     closeDialog() {
-      this.visiable = false;
+      this.$emit("closeSystemFaqDrillDialog");
     },
     changeRadio(value) {
       if (value === 0) {

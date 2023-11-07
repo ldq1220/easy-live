@@ -1,0 +1,39 @@
+/* 高级设置 */
+.advanced_setup_box {
+  padding: 60px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+.advanced_setup_title {
+  color: #808080;
+}
+.advanced_setup_title span {
+  cursor: pointer;
+  color: #f0855c;
+}
+.setup_item_box {
+  position: relative;
+  padding: 40px;
+  margin-top: 40px;
+  border: 1px solid #ccc;
+}
+.setup_item_box .setup_item_title {
+  width: 120px;
+  text-align: center;
+  font-size: 16px;
+  background-color: #fff;
+  position: absolute;
+  top: -10px;
+  left: 30px;
+}
+
+.search_num {
+  margin: 40px 0;
+}
+.emtpy_content_textarea textarea {
+  resize: none;
+}
+.emtpy_content_tooltip {
+  margin-top: 14px;
+  color: #808080;
+}

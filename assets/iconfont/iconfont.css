@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4316526 */
-  src: url('iconfont.woff2?t=1699241516549') format('woff2'),
-       url('iconfont.woff?t=1699241516549') format('woff'),
-       url('iconfont.ttf?t=1699241516549') format('truetype');
+  src: url('iconfont.woff2?t=1699325285314') format('woff2'),
+       url('iconfont.woff?t=1699325285314') format('woff'),
+       url('iconfont.ttf?t=1699325285314') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-fanyi-full:before {
+  content: "\e72a";
+}
+
+.icon-shuyi_fanyi-36:before {
+  content: "\e65c";
+}
+
+.icon-icon:before {
+  content: "\e651";
 }
 
 .icon-fanhui5:before {

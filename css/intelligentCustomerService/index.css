@@ -3,7 +3,7 @@
   padding: 20px;
 }
 
-.intelligent_customer_service_content {
+.intelligent_customer_service {
   background-color: #fff;
   border-radius: 5px;
   padding: 40px;
@@ -35,11 +35,12 @@
   font-weight: bold;
   color: #333;
   cursor: pointer;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 .table_item_detial .return i {
   font-size: 24px;
-  margin-right: 10px;
+  margin-right: 0px;
+  vertical-align: middle;
 }
 .table_item_detial .completeness {
   margin-left: 100px;
@@ -61,7 +62,6 @@
 .body_item_card {
   position: relative;
   cursor: pointer;
-  /* width: 330px; */
   width: 30%;
   height: 223px;
   transition: all 0.3s;

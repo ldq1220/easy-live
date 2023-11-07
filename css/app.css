@@ -2,11 +2,16 @@
   margin: 0;
   padding: 0;
 } */
+@import url("./loading-icon.css");
+@import url("./initialize.css");
 @import url("./intelligentCustomerService/index.css");
+@import url("./accuracyTest/index.css");
+@import url("./advancedSetup.css");
 
 body {
   background-color: #efefef;
   font-size: 14px;
+  color: #333;
 }
 
 .flex {
@@ -14,9 +19,18 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+.flex1 {
+  flex-grow: 1;
+}
 .flex2 {
   display: flex;
   align-items: center;
+}
+.flex_start {
+  align-items: flex-start;
+}
+.flex_wrap {
+  flex-wrap: wrap;
 }
 
 i.icon {
@@ -27,9 +41,6 @@ i.icon {
 }
 .font_weight {
   font-weight: bold;
-}
-.flex_start {
-  align-items: flex-start;
 }
 
 /* 弹窗el-dialog__body */

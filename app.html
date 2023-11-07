@@ -21,13 +21,17 @@
     <!-- 引入组件 -->
     <script src="./components/IntelligentCustomerService.js"></script>
     <script src="./components/lodingIcon/index.js"></script>
+    <script src="./components/initialize/index.js"></script>
     <script src="./components/serviceTrainingLibrary/index.js"></script>
     <script src="./components/serviceTrainingLibrary/components/newFAQ.js"></script>
     <script src="./components/serviceTrainingLibrary/components/asyncFAQ.js"></script>
     <script src="./components/serviceTrainingLibrary/components/splitQA.js"></script>
     <script src="./components/serviceTrainingLibrary/components/tableItemDetial.js"></script>
     <script src="./components/serviceTrainingLibrary/components/faqAddEditDialog.js"></script>
-    <script src="./components/serviceTrainingLibrary/components/systemFaqDrill.js"></script>
+    <script src="./components/serviceTrainingLibrary/components/systemFaqDrillDialog.js"></script>
+    <script src="./components/accuracyTest/index.js"></script>
+    <script src="./components/advancedSetup/index.js"></script>
+  
   </head>
 
 
@@ -58,6 +62,7 @@
 
   const app = createApp(vue3Composition)
     .component("intelligent-customer-service", IntelligentCustomerService)
+    .component("initialize", initialize)
     .component("service-training-library", serviceTrainingLibrary)
     .component("new-faq", newFAQ)
     .component("async-faq", asyncFAQ)
@@ -65,7 +70,9 @@
     .component("loading-icon", loadingIcon)
     .component("table-item-detial", tableItemDetial)
     .component("faq-add-edit-dialog", faqAddEditDialog)
-    .component("system-faq-dirll", systemFaqDrill)
+    .component("system-faq-dirll-dialog", systemFaqDrillDialog)
+    .component("accuracy-test", accuracyTest)
+    .component("advanced-setup", advancedSetup)
     .use(ElementPlus)
     .mount("#app"); //初始化
 </script>

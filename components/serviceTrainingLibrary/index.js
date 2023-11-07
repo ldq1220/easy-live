@@ -1,8 +1,10 @@
 const serviceTrainingLibrary = {
   template: `
       <div class="service_training_library">
-        <div class="service_training_library_header flex space_between">
-            <system-faq-dirll></system-faq-dirll>
+        <div class="service_training_library_header flex space_between" v-if="!showDetail"> 
+            <el-button type="primary" @click="openSystemFaqDrillDialog">
+              <i class="iconfont icon-baxin icon"></i>系统问答库训练
+            </el-button>
             
             <div class="flex">
                 <el-input v-model="searchValue" class="w-50 m-2" placeholder="搜索" style="margin-right:20px">
@@ -43,14 +45,14 @@ const serviceTrainingLibrary = {
                 </el-table-column>
             </el-table>
         </div>
-        
       </div>
 
+     
       <new-faq :dialogVisible="newFaqDialogVisible" @closenewfaq="closeNewFAQ"></new-faq>
       <async-faq :dialogVisible="asyncFaqDialogVisible" @closenewfaq="closeNewFAQ"></async-faq>
       <split-qa :dialogVisible="splitQaDialogVisible" @closenewfaq="closeNewFAQ"></split-qa>
-      
-      <table-item-detial />
+      <system-faq-dirll-dialog :dialogVisible="systemFaqDrillDialogVisible" @closeSystemFaqDrillDialog="closeSystemFaqDrillDialog"></system-faq-dirll-dialog>
+      <table-item-detial v-if="showDetail" :title="title" @returnHome="returnHome"/>
     `,
 
   data() {
@@ -76,7 +78,9 @@ const serviceTrainingLibrary = {
       newFaqDialogVisible: false,
       asyncFaqDialogVisible: false,
       splitQaDialogVisible: false,
-      showDetail: false,
+      showDetail: false, // 是否显示 列表详情
+      title: "系统问答库",
+      systemFaqDrillDialogVisible: false, // 系统问答库训练弹窗
     };
   },
   mounted() {
@@ -103,7 +107,19 @@ const serviceTrainingLibrary = {
     // 点击表格某一行
     imgSelected(row, event, column) {
       //点击获取索引
+      // this.showDetail = false;
       console.log(row);
+    },
+    // 系统问答库训练 弹窗
+    openSystemFaqDrillDialog() {
+      this.showDetail = true;
+      this.systemFaqDrillDialogVisible = true;
+    },
+    closeSystemFaqDrillDialog() {
+      this.systemFaqDrillDialogVisible = false;
+    },
+    returnHome() {
+      this.showDetail = false;
     },
   },
 };

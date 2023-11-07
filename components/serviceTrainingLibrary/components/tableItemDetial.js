@@ -1,13 +1,15 @@
 const tableItemDetial = {
   template: `
       <div class="table_item_detial">
-          <div class="return">
-            <i class="iconfont icon-fanhui5"></i>
-            手动录入
+          <div class="return" @click="returnPage">
+            <i class="iconfont icon-31fanhui"></i>
+            {{title}}
           </div>
           <div class="table_item_detial_header flex">
             <el-row>
-              <system-faq-dirll></system-faq-dirll>
+              <el-button type="primary" @click="openSystemFaqDrillDialog">
+                <i class="iconfont icon-baxin icon"></i>系统问答库训练
+              </el-button>
               <div class="completeness flex" >
                 <span class="completeness_text">完成度</span>
                 <el-progress :percentage="90"  :stroke-width="16" color="#67C23A" style="width:300px" />
@@ -53,6 +55,8 @@ const tableItemDetial = {
       </div>
 
       <faq-add-edit-dialog :dialogVisible="faqAddEditDialogVisible" :type="type" @closeAddEditDialog="closeAddEditDialog"></faq-add-edit-dialog>
+
+      <system-faq-dirll-dialog :dialogVisible="systemFaqDrillDialogVisible" @closeSystemFaqDrillDialog="closeSystemFaqDrillDialog"></system-faq-dirll-dialog>
     `,
 
   data() {
@@ -81,10 +85,11 @@ const tableItemDetial = {
         },
       ],
       faqAddEditDialogVisible: false,
+      systemFaqDrillDialogVisible: false,
       type: "add",
     };
   },
-  props: [""],
+  props: ["title"],
   methods: {
     openAddEditDialog(type) {
       if (type === "add") {
@@ -94,9 +99,18 @@ const tableItemDetial = {
       }
       this.faqAddEditDialogVisible = true;
     },
-
     closeAddEditDialog() {
       this.faqAddEditDialogVisible = false;
+    },
+    openSystemFaqDrillDialog() {
+      this.systemFaqDrillDialogVisible = true;
+    },
+    closeSystemFaqDrillDialog() {
+      this.systemFaqDrillDialogVisible = false;
+    },
+    // 返回
+    returnPage() {
+      this.$emit("returnHome");
     },
   },
 };
