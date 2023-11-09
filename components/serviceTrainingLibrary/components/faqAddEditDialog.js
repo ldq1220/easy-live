@@ -1,7 +1,7 @@
 const faqAddEditDialog = {
   template: `
-          <el-dialog v-model="dialogVisible" title="手动录入" width="827px" @open="openDialog" @close="closeDialog">
-              <div class="faq_add_edit_dialog_content flex">
+          <el-dialog v-model="dialogVisible" title="手动录入" width="827px" @open="openDialog" @close="closeDialog" align-center :before-close="handleClose">
+              <div class="faq_add_edit_dialog_content flex" v-loading="loading" element-loading-text="Loading...">
                   <div class="number font_weight" style="width:70px;">#001</div>
                   <div class="faq_form" style="width:100%">
                     <div class="faq_form_item question">
@@ -18,10 +18,10 @@ const faqAddEditDialog = {
                       <el-row class="flex" v-if="!hasAdd">
                         <div class="faq_form_item_label flex" style="width:100px;margin-right:10px">
                           <span></span>
-                          <span class="circle en">EN</span>
+                          <span class="circle en">En</span>
                         </div>
                         <div class="faq_form_item_input" style="width:530px">
-                          asddddddddddddddddddddddddd
+                          {{ questionEn }}
                         </div>
                       </el-row>
               
@@ -46,13 +46,13 @@ const faqAddEditDialog = {
 
                       <br/>
 
-                      <el-row class="flex" v-if="!hasAdd">
+                      <el-row class="flex flex_start" v-if="!hasAdd">
                         <div class="faq_form_item_label flex" style="width:100px;margin-right:10px">
                           <span></span>
-                          <span class="circle en">EN</span>
+                          <span class="circle en">En</span>
                         </div>
                         <div class="faq_form_item_input" style="width:530px">
-                          asddddddddddddddddddddddddd
+                          {{ answersEn }}
                         </div>
                       </el-row>
                     </div>
@@ -60,13 +60,17 @@ const faqAddEditDialog = {
               </div>
               <template #footer>
                 <div class="dialog_footer flex">
-                  <div class="footer_tooltip">
+                  <div class="footer_tooltip" v-if="type === 'add'">
                     <i class="iconfont icon-wenhao"></i>
                     不要重复多次添加同样的问题和问答
                   </div>
+                  <div class="footer_tooltip" v-else>
+                    <i class="iconfont icon-wenhao"></i>
+                    英文翻译将在保存后才会更新
+                  </div>
                   <div>
                     <el-button @click="closeDialog">取消</el-button>
-                    <el-button type="primary" @click="closeDialog">
+                    <el-button type="primary" @click="save">
                       确认
                     </el-button>
                   </div>
@@ -79,17 +83,84 @@ const faqAddEditDialog = {
     return {
       faqName: "",
       questionValue: "",
+      questionEn: "",
       answerValue: "",
+      answersEn: "",
       hasAdd: true,
+      loading: false,
     };
   },
-  props: ["dialogVisible", "type"],
+  props: ["dialogVisible", "type", "tableRowData", "faqdata"],
   methods: {
     openDialog() {
-      this.type === "add" ? (this.hasAdd = true) : (this.hasAdd = false);
+      if (this.type === "add") {
+        this.hasAdd = true;
+        this.questionValue = "";
+        this.answerValue = "";
+        this.questionEn = "";
+        this.answersEn = "";
+      } else {
+        this.hasAdd = false;
+        this.questionValue = this.faqdata.questionsCn;
+        this.answerValue = this.faqdata.answersCn;
+        this.questionEn = this.faqdata.questionsEn;
+        this.answersEn = this.faqdata.answersEn;
+      }
     },
+    async save() {
+      if (this.loading) return;
+      if (!this.questionValue.trim())
+        return this.$message.warning("请填写中文问题");
+      if (!this.answerValue.trim())
+        return this.$message.warning("请填写中文回答内容");
+
+      let reqData = {
+        datasetId: config.datasetId,
+        collectionId: this.tableRowData._id,
+        qCn: this.questionValue,
+        q: "",
+        aCn: this.answerValue,
+        a: "",
+        translate: true,
+      };
+      let res;
+
+      if (this.type === "add") {
+        this.loading = true;
+        res = await reqInsertData(reqData);
+      } else {
+        this.loading = true;
+        let reqData2 = {
+          id: this.faqdata.id,
+          ...reqData,
+        };
+
+        res = await reqUpdateData(reqData2);
+      }
+
+      const { code } = res;
+      if (code === 200) {
+        this.loading = false;
+        this.type === "add"
+          ? this.$message.success("添加成功")
+          : this.$message.success("修改成功");
+        this.$emit("getQuestionList");
+        this.closeDialog();
+      }
+    },
+    // 弹窗关闭前
     closeDialog() {
+      if (this.loading) return;
+
+      this.questionValue = "";
+      this.answerValue = "";
       this.$emit("closeAddEditDialog");
+    },
+    // 弹窗关闭前
+    handleClose(done) {
+      if (!this.loading) {
+        done();
+      }
     },
   },
 };

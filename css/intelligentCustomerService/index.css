@@ -1,14 +1,46 @@
 /* 智能客服 */
+
 .intelligent_customer_service_box {
-  padding: 20px;
+  /* padding: 20px; */
+  box-sizing: border-box;
+  border: 1px solid rgba(119, 40, 245, 1);
+  border-radius: 5px;
 }
 
 .intelligent_customer_service {
   background-color: #fff;
-  border-radius: 5px;
+  border-radius: 0 0 5px 5px;
   padding: 40px;
 }
-
+.intelligent_customer_service_box .tabs_box {
+  position: relative;
+  height: 90px;
+  padding: 30px 40px 0px 40px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(
+    to right,
+    rgba(119, 40, 245, 1) 0%,
+    rgb(192, 156, 250) 40%,
+    rgba(255, 255, 255, 1) 80%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+.tabs_box .tabs_box_left {
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.tabs_box .tabs_box_left p {
+  font-size: 14px;
+}
+.tabs_box .header_svg {
+  width: 140px;
+  height: 140px;
+  position: absolute;
+  top: 0;
+  left: 150px;
+}
 /* 客服训练库 */
 .service_training_library .table_content {
   height: 50px;
@@ -26,6 +58,16 @@
 .upload_text {
   display: block;
   padding: 10px;
+}
+.service_training_library_table {
+  border: 1px solid #e5e5e5;
+}
+.service_training_library_table .delete_icon {
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+}
+.service_training_library_table .delete_icon:hover {
+  transform: scale(1.3);
 }
 
 /* 列表项 详情 */
@@ -66,12 +108,16 @@
   height: 223px;
   transition: all 0.3s;
   margin-bottom: 50px;
+  margin-right: 5%;
+}
+.body_item_card:nth-child(3n) {
+  margin-right: 0;
 }
 .body_item_card .el-card {
   height: 223px;
 }
 .body_item_card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
 }
 .content_answers {
   width: 100%;
@@ -105,7 +151,7 @@
 }
 
 .card_content_footer .card_content_footer_detial_icon:hover i {
-  color: #fd4d4f;
+  color: #7728f5;
 }
 .body_item_card:hover .card_content_footer_detial_icon {
   display: block;
@@ -134,11 +180,20 @@
   align-items: flex-start;
 }
 .faq_form_item.question {
-  padding-bottom: 40px;
+  padding-bottom: 25px;
   border-bottom: 1px solid #e5e5e5;
 }
 .faq_form_item.answer {
   padding-top: 20px;
+}
+.faq_form_item .copy {
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 50px;
+}
+.faq_form_item .copy:hover {
+  color: #7728f5;
 }
 .circle.zn {
   background-color: #68b3c8;

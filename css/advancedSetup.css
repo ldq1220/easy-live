@@ -1,6 +1,9 @@
 /* 高级设置 */
 .advanced_setup_box {
+  width: 60%;
+  margin: 0 auto;
   padding: 60px;
+  text-align: center;
   border-radius: 5px;
   background-color: #fff;
 }
@@ -10,6 +13,9 @@
 .advanced_setup_title span {
   cursor: pointer;
   color: #f0855c;
+}
+.advanced_setup_title span:hover {
+  color: #7728f5;
 }
 .setup_item_box {
   position: relative;

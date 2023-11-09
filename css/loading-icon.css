@@ -1,12 +1,12 @@
-.cool-loader {
+/* .cool_loader {
   display: inline-block;
   width: 40px;
   height: 40px;
   position: relative;
 }
 
-.cool-loader:before,
-.cool-loader:after {
+.cool_loader:before,
+.cool_loader:after {
   content: "";
   position: absolute;
   left: 0;
@@ -18,8 +18,8 @@
   animation: spin 2s linear infinite;
 }
 
-.cool-loader:after {
-  animation-delay: -1s; /* 创建两个旋转的元素，一个有1秒的延迟 */
+.cool_loader:after {
+  animation-delay: -1s; 
 }
 
 @keyframes spin {
@@ -29,4 +29,11 @@
   100% {
     transform: rotate(360deg);
   }
+} */
+
+.cool_loader img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
 }

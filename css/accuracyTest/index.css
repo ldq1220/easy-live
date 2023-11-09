@@ -9,11 +9,11 @@
   border: 1px solid #ccc;
   border-radius: 40px;
   box-shadow: 3px 3px 3px #ccc;
+  margin-left: 100px;
 }
 
 /* 问答区域 */
 .accuracy_faq {
-  margin: 20px 0;
   padding: 20px 60px;
   background-color: #fff;
   border-radius: 5px;
@@ -33,6 +33,7 @@
 }
 .accuracy_faq .accuracy_faq_item {
   width: 45%;
+  height: 207px;
 }
 .accuracy_questions_input {
   margin: 10px 0;
@@ -44,7 +45,7 @@
   cursor: pointer;
 }
 .views_translate:hover {
-  color: #7ac29a;
+  color: #7728f5;
 }
 
 /* 测试结果分析 */
@@ -55,6 +56,10 @@
 }
 .test_result_analyse_title {
   margin-bottom: 20px;
+}
+
+.test_result_analyse_content {
+  min-height: 160px;
 }
 
 .test_result_analyse_content_item {

@@ -1,6 +1,6 @@
 // 创建axios实例
 const request = axios.create({
-  baseURL: "http://192.168.11.190:3000/api/",
+  baseURL: config.baseUrl,
 });
 
 // 配置请求拦截器

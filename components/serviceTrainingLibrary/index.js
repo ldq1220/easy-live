@@ -22,9 +22,6 @@ const serviceTrainingLibrary = {
                           <el-dropdown-item  @click="handleOpenDialog('asyncFAQ')"> 
                               <i class="iconfont icon-tongbu"></i>同步旧FAQ
                           </el-dropdown-item>
-                          <el-dropdown-item @click="handleOpenDialog('splitQA')">  
-                              <i class="iconfont icon-chaifen"></i>文档QA拆分
-                          </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                  </el-dropdown>
@@ -39,14 +36,14 @@ const serviceTrainingLibrary = {
                 <el-table-column prop="updateTime" label="时间" align="center" />
                 <el-table-column prop="trainingAmount" label="状态" align="center">
                   <template #default="scope">
-                    <div style="height:50px;line-height:50px ;">
+                    <div style="height:28px;line-height:28px ;">
                       {{scope.row.trainingAmount == 0?'已就绪': scope.row.trainingAmount + '索引中'}}
                     </div>
                   </template>
                 </el-table-column>
                 <el-table-column  label="操作" align="center">
                     <template #default="scope">
-                        <i class="iconfont icon-shanchu cursor table_content" style="color:#FD4D4F;" v-if="!scope.row.isSystem"></i>
+                        <i class="iconfont icon-shanchu delete_icon " style="color:#FD4D4F;" v-if="!scope.row.isSystem" @click.stop="handleDelete(scope.row._id)"></i>
                     </template>
                 </el-table-column>
             </el-table>
@@ -54,11 +51,11 @@ const serviceTrainingLibrary = {
       </div>
 
      
-      <new-faq :dialogVisible="newFaqDialogVisible" @closenewfaq="closeNewFAQ"></new-faq>
-      <async-faq :dialogVisible="asyncFaqDialogVisible" @closenewfaq="closeNewFAQ"></async-faq>
+      <new-faq :dialogVisible="newFaqDialogVisible" :tableDataLength="tableDataLength" @closenewfaq="closeNewFAQ" @getDatasetList="getDatasetList"></new-faq>
+      <async-faq :dialogVisible="asyncFaqDialogVisible" :tableData="tableData" @closenewfaq="closeNewFAQ" @getDatasetList="getDatasetList"></async-faq>
       <split-qa :dialogVisible="splitQaDialogVisible" @closenewfaq="closeNewFAQ"></split-qa>
-      <system-faq-dirll-dialog :dialogVisible="systemFaqDrillDialogVisible" @closeSystemFaqDrillDialog="closeSystemFaqDrillDialog"></system-faq-dirll-dialog>
-      <table-item-detial v-if="showDetail" :title="title" @returnHome="returnHome"/>
+
+      <table-item-detial v-if="showDetail" :isPopup="isPopup" :tableRowData="tableRowData" @returnHome="returnHome" @cancel="cancel"/>
     `,
 
   data() {
@@ -66,25 +63,25 @@ const serviceTrainingLibrary = {
       activeName: "first",
       searchValue: "", // 搜索框 value
       tableData: [],
+      tableDataLength: "",
+      tableRowData: {},
       newFaqDialogVisible: false,
       asyncFaqDialogVisible: false,
       splitQaDialogVisible: false,
       showDetail: false, // 是否显示 列表详情
-      title: "系统问答库",
-      systemFaqDrillDialogVisible: false, // 系统问答库训练弹窗
+      isPopup: false, // 是否 自动弹出 问答库训练弹窗
     };
   },
   mounted() {
-    console.log("智能客服库组件挂载啦！！！！");
     this.getDatasetList(); // 获取数据集列表
   },
   methods: {
     // 获取数据集列表
     async getDatasetList() {
-      let res = await getList({
+      let res = await reqDatasetList({
         pageNum: 1,
         pageSize: 10,
-        datasetId: "654a0e916bcc679370ccbef8",
+        datasetId: config.datasetId,
       });
       const { code, data } = res;
       if (code == 200) {
@@ -94,6 +91,7 @@ const serviceTrainingLibrary = {
           );
         });
         this.tableData = data.data;
+        this.tableDataLength = data.data.length;
       }
     },
     handleClick() {
@@ -115,20 +113,42 @@ const serviceTrainingLibrary = {
     },
     // 点击表格某一行
     imgSelected(row, event, column) {
-      //点击获取索引
-      // this.showDetail = false;
-      console.log(row);
-    },
-    // 系统问答库训练 弹窗
-    openSystemFaqDrillDialog() {
+      Object.assign(this.tableRowData, row);
       this.showDetail = true;
-      this.systemFaqDrillDialogVisible = true;
-    },
-    closeSystemFaqDrillDialog() {
-      this.systemFaqDrillDialogVisible = false;
     },
     returnHome() {
       this.showDetail = false;
+      this.isPopup = false;
+      this.getDatasetList(); // 获取数据集列表
+    },
+    // 系统问答库训练 弹窗
+    openSystemFaqDrillDialog() {
+      this.tableData.forEach((item) => {
+        if (item.name === "系统问答库") {
+          this.tableRowData = item;
+        }
+      });
+      this.showDetail = true;
+      this.isPopup = true;
+    },
+    // 取消 系统问答库训练弹窗 自动弹出
+    cancel() {
+      this.isPopup = false;
+    },
+    // 删除数据集
+    async handleDelete(id) {
+      this.$confirm("确认删除该问答数据吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(async () => {
+        let res = await reqDeleteDataset(id);
+        const { code } = res;
+        if (code === 200) {
+          this.$message.success("删除成功");
+          this.getDatasetList(); // 获取数据集列表
+        }
+      });
     },
   },
 };

@@ -1,6 +1,6 @@
 const newFAQ = {
   template: `
-      <el-dialog v-model="dialogVisible" title="新建FAQ库" width="40%" @close="closeDialog">
+      <el-dialog v-model="dialogVisible" title="新建FAQ库" width="40%" @close="closeDialog" align-center>
           <div class="flex">
             <div style="width:120px;">FAQ库名称</div>
             <el-input v-model="faqName" placeholder="输入名称" class="input-with-select"></el-input>
@@ -25,14 +25,32 @@ const newFAQ = {
       faqName: "",
     };
   },
-  props: ["dialogVisible"],
+  props: ["dialogVisible", "tableDataLength"],
   methods: {
     closeDialog() {
       this.$emit("closenewfaq");
     },
-    save() {
-      this.$message.success("创建成功");
-      this.closeDialog();
+    async save() {
+      if (this.tableDataLength >= 10) {
+        this.$message.warning("仅可创建10个数据集");
+        this.closeDialog();
+        return;
+      }
+
+      if (!this.faqName.trim()) return this.$message.error("请输入FAQ库名称");
+      let reqData = {
+        datasetId: config.datasetId,
+        parentId: "",
+        name: this.faqName,
+        type: "file",
+      };
+      let res = await reqCreateDataset(reqData);
+      const { code } = res;
+      if (code === 200) {
+        this.$message.success("创建成功");
+        this.closeDialog();
+        this.$emit("getDatasetList");
+      }
     },
   },
 };

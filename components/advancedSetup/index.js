@@ -1,24 +1,23 @@
 const advancedSetup = {
   template: `
-  <el-scrollbar height="700px">
-      <div class="advanced_setup_box">
+      <div class="advanced_setup_box" v-loading="loading" element-loading-text="Loading...">
         <div class="advanced_setup_title">
             <i class="iconfont icon-icon"></i>
-            如果没有详细了解AI特性, 建议不要修改默认设置; 修改完可以到<span>准确度测试</span>栏目看看效果。 
+            如果没有详细了解AI特性, 建议不要修改默认设置; 修改完可以到<span @click="toAccuracyTest">准确度测试</span>栏目看看效果。 
         </div>
 
-        <div class="setup_item_box">
+        <div class="setup_item_box" >
             <div class="setup_item_title font_weight">搜索参数调整</div>
             <div class="setup_item flex2">
                 <div class="setup_item_label font_weight" style="width:100px">相似度</div>
                 <div style="width:30px">0</div>
-                <el-slider v-model="similarityValue" :format-tooltip="formatTooltipSimilarity" style="width:400px"/>
+                <el-slider v-model="similarityValue" :mix="0" :max="1" :step="0.1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">1</div>
             </div>
             <div class="setup_item flex2 search_num">
                 <div class="setup_item_label font_weight" style="width:100px">单次搜索量</div>
                 <div style="width:30px">1</div>
-                <el-slider v-model="searchNumValue" :format-tooltip="formatTooltipSearchNum" style="width:400px"/>
+                <el-slider v-model="searchNumValue" :mix="1" :max="20" :step="1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">20</div>
             </div>
              <div class="setup_item flex2 flex_start">
@@ -46,16 +45,14 @@ const advancedSetup = {
             <div class="setup_item flex2">
                 <div class="setup_item_label font_weight" style="width:100px">温度</div>
                 <div style="width:30px;transform: translateX(-20px);">严谨</div>
-                <el-slider v-model="temperatureValue" :format-tooltip="formatTooltipTemperature" style="width:400px"/>
+                <el-slider v-model="temperatureValue" :mix="0" :max="1" :step="0.1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">发散</div>
             </div>
-             <div class="setup_item flex2 flex_start" style="margin-top:40px">
+             <div class="setup_item flex2 " style="margin-top:40px">
                 <div class="setup_item_label font_weight" style="width:100px">AI语言</div>
                 <div>
                 <el-select v-model="langSelect"  style="width:160px;transform: translateX(-20px);">
                     <el-option label="英语" value="英语" />
-                    <el-option label="法语" value="法语" />
-                    <el-option label="意大利语" value="意大利语" />
                 </el-select>
                 </div>
             </div>
@@ -64,33 +61,83 @@ const advancedSetup = {
         <div class="advanced_setup_btns flex" style="margin-top:20px">
             <div></div>
             <div>
-                <el-button  @click="" style="padding:10px 30px">恢复默认</el-button>
-                <el-button type="primary" @click="" style="padding:10px 40px">保存</el-button>
+                <el-button  @click="" style="padding:10px 30px" @click="handleDefault">恢复默认</el-button>
+                <el-button type="primary" @click="handleSave" style="padding:10px 40px">保存</el-button>
             </div>
         </div>
       </div>
-    </el-scrollbar> 
     `,
 
   data() {
     return {
-      similarityValue: 40, // 相似度
-      searchNumValue: 25, // 单次搜索量
+      similarityValue: 0, // 相似度
+      searchNumValue: 0, // 单次搜索量
       emtpyContentValue: "", // 空搜索回复
       temperatureValue: 0, // 温度
       langSelect: "英语",
+      loading: false,
     };
   },
   props: [""],
+  mounted() {
+    this.getSetup(); // 获取高级设置
+  },
   methods: {
-    formatTooltipSimilarity(val) {
-      return val / 100;
+    // 获取高级设置
+    async getSetup() {
+      this.loading = true;
+      let res = await reqDetailModule(config.appId);
+      const { code, data } = res;
+      if (code === 200) {
+        this.loading = false;
+
+        this.similarityValue = data.similarity;
+        this.searchNumValue = data.limit;
+        this.emtpyContentValue = data.emptyText;
+        this.temperatureValue = data.temperature;
+        this.langSelect = data.systemPrompt.split("[")[1].split("]")[0];
+      }
     },
-    formatTooltipSearchNum(val) {
-      return val / 5;
+    // 保存
+    async handleSave() {
+      let reqData = {
+        similarity: this.similarityValue,
+        limit: this.searchNumValue,
+        emptyText: this.emtpyContentValue,
+        temperature: this.temperatureValue,
+        systemPrompt: `你必须要用[${this.langSelect}]回复`,
+      };
+
+      this.updateSetup(reqData, "save");
     },
-    formatTooltipTemperature(val) {
-      return val / 10;
+    // 恢复默认
+    async handleDefault() {
+      let reqData = {
+        similarity: 0.6,
+        limit: 10,
+        emptyText:
+          "Sorry, I can't answer your question at the moment, a member of staff will contact you later",
+        temperature: 0,
+        systemPrompt: "你必须要用[英语]回复",
+      };
+
+      this.updateSetup(reqData, "default");
+    },
+    // 修改数据
+    async updateSetup(req, type) {
+      let res = await reqUpdateModule(config.appId, req);
+      const { code, data } = res;
+      if (code === 200) {
+        this.$message({
+          type: "success",
+          message: type === "save" ? "保存成功" : "已恢复默认",
+        });
+
+        this.getSetup(); // 获取高级设置
+      }
+    },
+    toAccuracyTest() {
+      this.$emit("gotoAccuracyTest");
     },
   },
 };

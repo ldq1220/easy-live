@@ -6,6 +6,13 @@
   "description": "易直播-智能客服 模块",
   "glyphs": [
     {
+      "icon_id": "5993150",
+      "name": "复制",
+      "font_class": "fuzhi",
+      "unicode": "ec7a",
+      "unicode_decimal": 60538
+    },
+    {
       "icon_id": "2967257",
       "name": "操作-翻译-full",
       "font_class": "fanyi-full",

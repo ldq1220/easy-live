@@ -1,6 +1,6 @@
 const splitQA = {
   template: `
-        <el-dialog v-model="dialogVisible" title="文档QA拆分" width="40%" @close="closeDialog">
+        <el-dialog v-model="dialogVisible" title="文档QA拆分" width="40%" @close="closeDialog" align-center>
             <div class="content">
                 <el-upload
                     class="upload-demo"
