@@ -39,8 +39,14 @@ const asyncFAQ = {
 
       this.isToLead = true;
       await axios
-        .get(config.queryListByUserIdUrl + `?userId=${config.userId}`)
+        .get(config.queryListByUserIdUrl)
         .then((res) => {
+          if (res.data.length === 0) {
+            this.$message.warning("旧FAQ数据为空，不需要添加到训练库");
+            this.isToLead = false;
+            this.closeDialog();
+            return;
+          }
           this.arrDataSet(res.data); // 创建新的数据集
         });
     },
@@ -54,12 +60,20 @@ const asyncFAQ = {
       };
 
       let addRes = await reqCreateDataset(req);
+
       if (addRes.code === 200) {
         this.dataSetAddItem(addRes.data, data);
       }
     },
     // 往数据集中插入数据
     dataSetAddItem(id, data) {
+      if(data.length === 0 ){
+        this.$emit("getDatasetList");
+        this.isToLead = false;
+        this.closeDialog();
+        return
+      }
+
       let falg = 0;
 
       data.forEach(async (item) => {

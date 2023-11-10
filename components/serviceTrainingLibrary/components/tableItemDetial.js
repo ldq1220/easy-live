@@ -19,7 +19,7 @@ const tableItemDetial = {
             <el-row>
               <el-input v-model="searchValue" placeholder="搜索" style="width:216px;margin-right:20px" @keyup.enter="handleSearch" @blur="handleSearch">
                 <template #prefix>
-                  <i class="iconfont icon-sousuo"></i>
+                  <i class="iconfont icon-sousuo cursor" @click="handleSearch"></i>
                 </template>
               </el-input>
               <el-button type="success" @click="openAddEditDialog('add')" v-if="tableRowData.name !== '系统问答库'">
@@ -29,7 +29,7 @@ const tableItemDetial = {
             
           </div>
 
-          <div class="table_item_detial_body flex2">
+          <div class="table_item_detial_body flex2" v-loading="loading" element-loading-text="数据加载中，请稍候...">
             <div class="body_item_card " v-for="item in questionList" :key="item.id">
               <el-card class="box_card"  @click="openAddEditDialog('edit',item)">
                 <template #header>
@@ -44,7 +44,7 @@ const tableItemDetial = {
                       {{ item.answersCn }}
                   </div>
                   <div class="card_content_footer flex" >
-                      <span>#{{ item.index }}</span>
+                      <span>#{{ item.index + 9 * (pageNum - 1)}}</span>
                       <div class="card_content_footer_detial_icon" @click.stop="deleteQuestion(item.id)">
                         <i class="iconfont icon-shanchu"></i>
                       </div>
@@ -63,7 +63,8 @@ const tableItemDetial = {
 
       <faq-add-edit-dialog :dialogVisible="faqAddEditDialogVisible" :type="type" :tableRowData="tableRowData" :faqdata="faqdata" @closeAddEditDialog="closeAddEditDialog" @getQuestionList="getQuestionList"></faq-add-edit-dialog>
 
-      <system-faq-dirll-dialog :dialogVisible="systemFaqDrillDialogVisible" :tableRowData="tableRowData" :questionIds="questionIds" :questionLibraryList="questionLibraryList" @closeSystemFaqDrillDialog="closeSystemFaqDrillDialog" @getQuestionList="getQuestionList"></system-faq-dirll-dialog>
+      <system-faq-dirll-dialog :dialogVisible="systemFaqDrillDialogVisible" :tableRowData="tableRowData" :questionIds="questionIds" :questionLibraryList="questionLibraryList" 
+      :percentage="percentage" @closeSystemFaqDrillDialog="closeSystemFaqDrillDialog" @getQuestionList="getQuestionList"></system-faq-dirll-dialog>
     `,
 
   data() {
@@ -88,22 +89,32 @@ const tableItemDetial = {
       // 分页
       pageNum: 1,
       total: 0,
+      loading:false
     };
   },
   props: ["tableRowData", "isPopup"],
   mounted() {
-    this.getQuestionLibraryList(); // 获取 系统问答库总列表
+    if(this.tableRowData.name === '系统问答库'){
+      this.getQuestionLibraryList(); // 获取 系统问答库总列表
+    }
+    this.getQuestionList()  // 获取系统问答库 数据集的数据列表
   },
   methods: {
     // 获取 系统问答库总列表
     async getQuestionLibraryList() {
       await axios.get(config.questionLibraryListUrl).then((res) => {
         this.questionLibraryList = res.data;
-        this.getQuestionList(); // 获取系统问答库 数据集的数据列表
+        // this.getQuestionList(); // 获取系统问答库 数据集的数据列表
+        if (!this.searchValue.trim() && this.questionIds.length !== 0 && this.questionLibraryList.length !== 0) {
+          this.percentage = Math.round(
+              (this.questionIds.length / this.questionLibraryList.length) * 100
+          );
+        }
       });
     },
     // 获取系统问答库 数据集的数据列表
     async getQuestionList() {
+      this.loading = true
       let reqData = {
         pageNum: this.pageNum,
         pageSize: 9,
@@ -127,11 +138,12 @@ const tableItemDetial = {
         this.questionIds = data.questionIds;
         this.total = data.total;
 
-        if (!this.searchValue.trim()) {
+        if (!this.searchValue.trim() && this.questionIds.length !== 0 && this.questionLibraryList.length !== 0) {
           this.percentage = Math.round(
             (this.questionIds.length / this.questionLibraryList.length) * 100
           );
         }
+
 
         if (this.isPopup && this.percentage !== 100) {
           this.systemFaqDrillDialogVisible = true;
@@ -140,6 +152,8 @@ const tableItemDetial = {
           this.systemFaqDrillDialogVisible = false;
         }
       }
+
+      this.loading = false
     },
     //删除数据集中的数据
     deleteQuestion(id) {
@@ -187,6 +201,7 @@ const tableItemDetial = {
       this.systemFaqDrillDialogVisible = true;
     },
     closeSystemFaqDrillDialog() {
+      this.$emit("cancel")
       this.systemFaqDrillDialogVisible = false;
     },
     // 返回

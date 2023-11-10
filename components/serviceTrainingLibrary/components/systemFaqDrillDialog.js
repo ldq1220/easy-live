@@ -5,7 +5,7 @@ const systemFaqDrillDialog = {
                   <span class="completeness_text">完成度</span>
                   <el-progress :percentage="percentage"  :stroke-width="16" color="#67C23A" style="width:300px" />
                 </div>
-                <div class="faq_add_edit_dialog_content flex" v-loading="loading" element-loading-text="Loading...">
+                <div class="faq_add_edit_dialog_content flex" v-loading="loading" element-loading-text="正在进库训练中，请稍候...">
                     <div class="number font_weight" style="width:70px;">#{{ questionIdsLength + 1}}</div>
                     <div class="faq_form" style="width:100%">
                       <div class="faq_form_item question">
@@ -52,6 +52,8 @@ const systemFaqDrillDialog = {
                                 placeholder="使用中文输入回答内容"
                                 id="myInput"
                                 :disabled="radio == 1"
+                                show-word-limit
+                                maxlength ="300"
                             />
                           </div>
                         </el-row>
@@ -89,7 +91,6 @@ const systemFaqDrillDialog = {
 
   data() {
     return {
-      percentage: 0,
       visiable: false,
       loading: false,
       radio: 0,
@@ -106,6 +107,7 @@ const systemFaqDrillDialog = {
     "type",
     "tableRowData",
     "questionIds",
+    "percentage",
     "questionLibraryList",
   ],
   mounted() {},
@@ -114,7 +116,6 @@ const systemFaqDrillDialog = {
     openDialog() {
       this.questionIdsLength = this.questionIds.length;
       this.filterQuestionList(); // 获取用户当前 展示数据项的下标
-      this.countPercentage(); // 计算完成度
     },
     // 复制 官方推荐回答
     copyContent() {
@@ -164,9 +165,10 @@ const systemFaqDrillDialog = {
           this.answerValueEn = this.questionLibraryCruuent.answerEn;
 
           this.radio = 0;
+          this.answerValue = ''
 
-          this.countPercentage(); // 计算完成度
           this.$message.success("加入问答库成功,请继续");
+
         }
 
         this.loading = false;
@@ -209,20 +211,6 @@ const systemFaqDrillDialog = {
       this.questionLibraryIndex = 0;
       this.questionLibraryCruuent =
         this.filterQuestionLibraryList[this.questionLibraryIndex];
-    },
-    // 计算完成度
-    countPercentage() {
-      if (this.questionIdsLength === 0) {
-        return (this.percentage = 0);
-      }
-
-      this.percentage = Math.round(
-        (this.questionIdsLength / this.questionLibraryList.length) * 100
-      );
-
-      if (this.questionIdsLength === 100) {
-        this.$emit("closeSystemFaqDrillDialog");
-      }
     },
 
     // 关闭弹窗

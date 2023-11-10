@@ -1,7 +1,7 @@
 const faqAddEditDialog = {
   template: `
           <el-dialog v-model="dialogVisible" title="手动录入" width="827px" @open="openDialog" @close="closeDialog" align-center :before-close="handleClose">
-              <div class="faq_add_edit_dialog_content flex" v-loading="loading" element-loading-text="Loading...">
+              <div class="faq_add_edit_dialog_content flex" v-loading="loading" element-loading-text="正在进库训练中，请稍候...">
                   <div class="number font_weight" style="width:70px;">#001</div>
                   <div class="faq_form" style="width:100%">
                     <div class="faq_form_item question">
@@ -146,7 +146,11 @@ const faqAddEditDialog = {
           : this.$message.success("修改成功");
         this.$emit("getQuestionList");
         this.closeDialog();
+      }else{
+          this.$message.error(res.message)
+          this.loading = false;
       }
+
     },
     // 弹窗关闭前
     closeDialog() {

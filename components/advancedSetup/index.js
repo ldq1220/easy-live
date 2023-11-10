@@ -1,6 +1,6 @@
 const advancedSetup = {
   template: `
-      <div class="advanced_setup_box" v-loading="loading" element-loading-text="Loading...">
+      <div class="advanced_setup_box" v-loading="loading" :element-loading-text="loadingText">
         <div class="advanced_setup_title">
             <i class="iconfont icon-icon"></i>
             如果没有详细了解AI特性, 建议不要修改默认设置; 修改完可以到<span @click="toAccuracyTest">准确度测试</span>栏目看看效果。 
@@ -14,12 +14,15 @@ const advancedSetup = {
                 <el-slider v-model="similarityValue" :mix="0" :max="1" :step="0.1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">1</div>
             </div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 0 30px">客户问题搜索的答案与客服训练库的匹配度，数值越小匹配度越低，数值越高匹配度越高。</div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 0 30px"><span style="color: #fc4949;">注意：</span>相似度过高时，可能搜索不到对应的答案，就会进行空搜索回复，建议设置在0.5~0.8之间。</div>
             <div class="setup_item flex2 search_num">
                 <div class="setup_item_label font_weight" style="width:100px">单次搜索量</div>
                 <div style="width:30px">1</div>
                 <el-slider v-model="searchNumValue" :mix="1" :max="20" :step="1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">20</div>
             </div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 40px 30px">客户问题搜索的答案数量。</div>
              <div class="setup_item flex2 flex_start">
                 <div class="setup_item_label font_weight" style="width:100px">空搜索回复</div>
                 <div>
@@ -31,10 +34,9 @@ const advancedSetup = {
                         class="emtpy_content_textarea"
                         style="width:600px"
                     />
-                    <div class="emtpy_content_tooltip flex flex_start"  style="width:600px">
+                    <div class="emtpy_content_tooltip flex2"  style="width:600px">
                         <i style="width:40px" class="iconfont icon-wenhao"></i>
-                        <div>若填写该内容，没有搜索到对应内容时，将直接回复填写的内容。
-                        为了连贯上下文，系统会取部分上一个聊天的搜索记录作为补充，因此在连续对话时，该功能可能会失效。</div>
+                        <div style="text-align: left;">若填写该内容，没有搜索到对应答案时，将直接回复填写的内容。</div>
                     </div>
                 </div>
             </div>
@@ -48,6 +50,7 @@ const advancedSetup = {
                 <el-slider v-model="temperatureValue" :mix="0" :max="1" :step="0.1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">发散</div>
             </div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 40px 40px">温度数值影响到AI人性化回复</div>
              <div class="setup_item flex2 " style="margin-top:40px">
                 <div class="setup_item_label font_weight" style="width:100px">AI语言</div>
                 <div>
@@ -56,6 +59,7 @@ const advancedSetup = {
                 </el-select>
                 </div>
             </div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 40px 40px">选择该语言后，AI会用所选的语言进行回复。</div>
         </div>
         
         <div class="advanced_setup_btns flex" style="margin-top:20px">
@@ -76,6 +80,7 @@ const advancedSetup = {
       temperatureValue: 0, // 温度
       langSelect: "英语",
       loading: false,
+      loadingText:'获取数据中，请稍候...'
     };
   },
   props: [""],
@@ -84,18 +89,25 @@ const advancedSetup = {
   },
   methods: {
     // 获取高级设置
-    async getSetup() {
+    async getSetup(type) {
       this.loading = true;
       let res = await reqDetailModule(config.appId);
       const { code, data } = res;
       if (code === 200) {
-        this.loading = false;
 
         this.similarityValue = data.similarity;
         this.searchNumValue = data.limit;
         this.emtpyContentValue = data.emptyText;
         this.temperatureValue = data.temperature;
         this.langSelect = data.systemPrompt.split("[")[1].split("]")[0];
+        if(type){
+          this.$message({
+            type: "success",
+            message: type === "save" ? "保存成功" : "已恢复默认",
+          });
+        }
+
+        this.loading = false;
       }
     },
     // 保存
@@ -125,16 +137,22 @@ const advancedSetup = {
     },
     // 修改数据
     async updateSetup(req, type) {
+      this.loading = true;
+      this.loadingText = '保存数据中，请稍候...'
+
       let res = await reqUpdateModule(config.appId, req);
       const { code, data } = res;
       if (code === 200) {
-        this.$message({
-          type: "success",
-          message: type === "save" ? "保存成功" : "已恢复默认",
-        });
-
-        this.getSetup(); // 获取高级设置
+        if (type === "default") {
+          this.similarityValue = 0.6
+          this.searchNumValue = 10
+          this.emtpyContentValue =  "Sorry, I can't answer your question at the moment, a member of staff will contact you later"
+          this.temperatureValue = 0
+          this.langSelect = "英语"
+        }
+        this.$message.success('修改成功')
       }
+      this.loading = false;
     },
     toAccuracyTest() {
       this.$emit("gotoAccuracyTest");

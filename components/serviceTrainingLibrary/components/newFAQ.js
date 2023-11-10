@@ -28,6 +28,7 @@ const newFAQ = {
   props: ["dialogVisible", "tableDataLength"],
   methods: {
     closeDialog() {
+      this.faqName = ''
       this.$emit("closenewfaq");
     },
     async save() {

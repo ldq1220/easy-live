@@ -5,7 +5,7 @@ const IntelligentCustomerService = {
     <div class="intelligent_customer_service_box" v-if="!isInitialize">
       <div class="tabs_box flex flex_end">
         <div class="tabs_box_left">
-          <div>智能客服</div>
+          <div style="line-height: 50px;font-size: 22px;">智能客服</div>
           <p>通过训练 让AI成为你的专属客服</p>
           
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="header_svg" viewBox="0 0 32 32" width="144" height="144" style="border-color: rgba(0,0,0,0);border-width: bpx;border-style: undefined" filter="none">  
@@ -23,7 +23,7 @@ const IntelligentCustomerService = {
 
       </div>
         
-        <el-scrollbar height="600px">
+        <el-scrollbar height="calc(100vh - 160px)" style="border-radius: 5px;">
           <div class="intelligent_customer_service" v-if="activeName === 'first'">
             <service-training-library></service-training-library>
           </div>
@@ -42,15 +42,25 @@ const IntelligentCustomerService = {
   data() {
     return {
       activeName: "first",
-      isInitialize: true, // 是 初始化
+      isInitialize: false, // 是 初始化
     };
   },
   mounted() {
-    setTimeout(() => {
-      this.isInitialize = false;
-    }, 500);
+    if (config.initStatus) this.isInitialize = false;
+    // else this.initFastGPT();
   },
   methods: {
+    async initFastGPT() {
+      await axios.post("/faq/initFastGPT").then((res) => {
+        if (res.data.result) {
+          this.isInitialize = false;
+          config.appId = res.data.data.appId;
+          config.datasetId = res.data.data.datasetId;
+          config.authorization =
+            res.data.data.apiKey + "-" + res.data.data.appId;
+        }
+      });
+    },
     dialog() {
       this.dialogVisible = true;
     },

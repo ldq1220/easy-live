@@ -1,15 +1,15 @@
 const serviceTrainingLibrary = {
   template: `
-      <div class="service_training_library">
+      <div class="service_training_library" v-loading="operateLoading"  element-loading-text="数据处理中，请稍候...">
         <div class="service_training_library_header flex space_between" v-if="!showDetail"> 
             <el-button type="primary" @click="openSystemFaqDrillDialog">
               <i class="iconfont icon-baxin icon"></i>系统问答库训练
             </el-button>
             
             <div class="flex">
-                <el-input v-model="searchValue" class="w-50 m-2" placeholder="搜索" style="margin-right:20px">
+                <el-input v-model="searchValue" class="w-50 m-2" placeholder="搜索" style="margin-right:20px" @keyup.enter="getDatasetList">
                     <template #prefix>
-                        <i class="iconfont icon-sousuo"></i>
+                        <i class="iconfont icon-sousuo cursor"  @click="getDatasetList" ></i>
                     </template>
                 </el-input>
                 <el-dropdown>
@@ -28,15 +28,16 @@ const serviceTrainingLibrary = {
             </div>
         </div>
 
-        <div class="service_training_library_table" v-if="!showDetail">
+        <div class="service_training_library_table" v-if="!showDetail"  v-loading="loading"  element-loading-text="数据加载中，请稍候...">
             <el-table :data="tableData" row-class-name="table_row_item cursor"  height="400" style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
                 <el-table-column type="index" label="#" align="center" />
                 <el-table-column prop="name" label="名称" align="center" />
                 <el-table-column prop="dataAmount" label="数据总量" align="center" />
-                <el-table-column prop="updateTime" label="时间" align="center" />
                 <el-table-column prop="trainingAmount" label="状态" align="center">
                   <template #default="scope">
                     <div style="height:28px;line-height:28px ;">
+                    <span style="display: inline-block;width: 10px;height: 10px;border-radius: 50%;background-color: #38a169" v-if="scope.row.trainingAmount == 0"></span>
+                    <span style="display: inline-block;width: 10px;height: 10px;border-radius: 50%;background-color: #ff8500" v-else></span>
                       {{scope.row.trainingAmount == 0?'已就绪': scope.row.trainingAmount + '索引中'}}
                     </div>
                   </template>
@@ -70,6 +71,8 @@ const serviceTrainingLibrary = {
       splitQaDialogVisible: false,
       showDetail: false, // 是否显示 列表详情
       isPopup: false, // 是否 自动弹出 问答库训练弹窗
+      loading: false,
+      operateLoading: false,
     };
   },
   mounted() {
@@ -78,10 +81,13 @@ const serviceTrainingLibrary = {
   methods: {
     // 获取数据集列表
     async getDatasetList() {
+      this.loading = true;
+
       let res = await reqDatasetList({
         pageNum: 1,
         pageSize: 10,
         datasetId: config.datasetId,
+        // searchText: this.searchValue,
       });
       const { code, data } = res;
       if (code == 200) {
@@ -93,6 +99,7 @@ const serviceTrainingLibrary = {
         this.tableData = data.data;
         this.tableDataLength = data.data.length;
       }
+      this.loading = false;
     },
     handleClick() {
       this.$emit("fatherEmit", "this.data");
@@ -137,6 +144,7 @@ const serviceTrainingLibrary = {
     },
     // 删除数据集
     async handleDelete(id) {
+      this.operateLoading = true;
       this.$confirm("确认删除该问答数据吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -148,6 +156,7 @@ const serviceTrainingLibrary = {
           this.$message.success("删除成功");
           this.getDatasetList(); // 获取数据集列表
         }
+        this.operateLoading = false;
       });
     },
   },

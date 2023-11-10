@@ -19,18 +19,18 @@ const accuracyTest = {
                     />
                     <div class="flex">
                       <div></div>
-                      <el-button type="primary" style="padding:8px 30px" @click="handleTest">测试</el-button>
+                      <el-button type="primary" style="padding:8px 30px" @click="handleTest" :disabled="disabled">测试</el-button>
                     </div>
                 </div>
             </div>
 
-            <div class="accuracy_faq_item answer flex" v-loading="chatLoading"  element-loading-text="Loading...">
+            <div class="accuracy_faq_item answer flex" v-loading="chatLoading"  :element-loading-text="loadingText">
               <el-scrollbar height="207px" style="width:100%">
                 <div class="flex flex_start" style="width:100%">
                   <div style="width:40px">
                     <span class="circle faq">答</span>
                   </div>
-                  <div class="answer_content" :class="isEn && answerText!=''? 'isEN' :''">
+                  <div class="answer_content" :class="answerText?'isEn':''">
                     <div class="flex">
                       <span class="font_weight">AI回答内容</span>
                       <div class="views_translate" @click="viewsTranslate">
@@ -53,7 +53,7 @@ const accuracyTest = {
 
         <div class="test_result_analyse"> 
           <div class="test_result_analyse_title font_weight">测试结果分析</div>
-          <div class="test_result_analyse_content flex flex_wrap" v-loading="testResultLoading" element-loading-text="Loading...">
+          <div class="test_result_analyse_content flex flex_wrap" v-loading="testResultLoading" element-loading-text="测试中，请稍候...">
             <div class="test_result_analyse_content_item" v-for="(item,index) in testResultData" :key="item.id">
               <div class="test_result_analyse_content_item_similarity flex">
                 <span class="font_weight">#{{index + 1}}</span>
@@ -92,32 +92,42 @@ const accuracyTest = {
       testResultData: [],
       testResultLoading: false,
       chatLoading: false,
+      loadingText:'回答中,请稍后...'
     };
   },
   props: [""],
-  mounted() {},
+  mounted() {
+  },
   methods: {
     // 查看翻译
     async viewsTranslate() {
       if (!this.answerText) return this.$message.warning("暂无翻译内容");
 
-      if (this.isEn) {
+      if (this.isEn && !this.originalText) {
+        this.chatLoading = true
+        this.loadingText = '翻译中,请稍后...'
+
+        let req = new FormData()
+        req.append('text',this.answerText)
         await axios
-          .post(config.chatTranslateUrl, {
-            text: this.answerText,
-          })
+          .post(config.chatTranslateUrl, req)
           .then((res) => {
-            if (true) {
-              this.originalText = res.data;
+            if (res.data.result) {
+              this.originalText = res.data.data;
               this.isEn = false;
               this.viewsTranslateText = "查看原文";
+              this.chatLoading = false
             } else {
               this.$message.warning("翻译失败,请重试");
             }
           });
-      } else {
+      } else if(!this.isEn && this.originalText){
+        this.loadingText = '回答中,请稍后...'
         this.isEn = true;
         this.viewsTranslateText = "查看翻译";
+      } else {
+        this.isEn = false;
+        this.viewsTranslateText = "查看原文";
       }
     },
     // 测试
@@ -127,6 +137,9 @@ const accuracyTest = {
 
       this.chatLoading = true;
       this.testResultLoading = true;
+      this.originalText = ""
+      this.isEn =  true
+      this.viewsTranslateText = "查看翻译";
       // 对话
       let chatReqData = {
         chatId: "",
@@ -140,10 +153,6 @@ const accuracyTest = {
           },
         ],
       };
-
-      const chatRes = await reqChatCompletions(chatReqData);
-      this.answerText = chatRes.choices[0].message.content;
-      this.chatLoading = false;
 
       // 搜索测试
       setTimeout(async () => {
@@ -165,6 +174,17 @@ const accuracyTest = {
           });
         }
       }, 100);
+
+      const chatRes = await reqChatCompletions(chatReqData);
+      this.answerText = chatRes.choices[0].message.content;
+      this.chatLoading = false;
+
+
     },
   },
+  computed: {
+    disabled(){
+      return this.chatLoading || this.testResultLoading
+    }
+  }
 };
