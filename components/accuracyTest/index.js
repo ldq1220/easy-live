@@ -24,13 +24,13 @@ const accuracyTest = {
                 </div>
             </div>
 
-            <div class="accuracy_faq_item answer flex" v-loading="chatLoading"  :element-loading-text="loadingText">
+            <div class="accuracy_faq_item answer flex" v-loading="chatLoading" :element-loading-text="loadingText">
               <el-scrollbar height="207px" style="width:100%">
                 <div class="flex flex_start" style="width:100%">
                   <div style="width:40px">
                     <span class="circle faq">答</span>
                   </div>
-                  <div class="answer_content" :class="answerText?'isEn':''">
+                  <div class="answer_content">
                     <div class="flex">
                       <span class="font_weight">AI回答内容</span>
                       <div class="views_translate" @click="viewsTranslate">
@@ -38,7 +38,8 @@ const accuracyTest = {
                       </div>  
                     </div>
                     <div class="answer_content_text">
-                      {{ isEn? answerText :originalText }}
+                      <span>{{ isEn? answerText :originalText }}</span>
+                      <span class="answer_content_text_span" v-if="chatResult"></span>
                     </div>
                   </div>
                 </div>
@@ -92,37 +93,38 @@ const accuracyTest = {
       testResultData: [],
       testResultLoading: false,
       chatLoading: false,
-      loadingText:'回答中,请稍后...'
+      chatResult: false,
+      loadingText: "回答中,请稍后...",
     };
   },
   props: [""],
-  mounted() {
-  },
+  mounted() {},
   methods: {
     // 查看翻译
     async viewsTranslate() {
+      if (this.viewsTranslateText === "查看翻译" && !this.originalText) {
+        this.chatLoading = true;
+      }
+
       if (!this.answerText) return this.$message.warning("暂无翻译内容");
 
       if (this.isEn && !this.originalText) {
-        this.chatLoading = true
-        this.loadingText = '翻译中,请稍后...'
+        this.loadingText = "翻译中,请稍后...";
 
-        let req = new FormData()
-        req.append('text',this.answerText)
-        await axios
-          .post(config.chatTranslateUrl, req)
-          .then((res) => {
-            if (res.data.result) {
-              this.originalText = res.data.data;
-              this.isEn = false;
-              this.viewsTranslateText = "查看原文";
-              this.chatLoading = false
-            } else {
-              this.$message.warning("翻译失败,请重试");
-            }
-          });
-      } else if(!this.isEn && this.originalText){
-        this.loadingText = '回答中,请稍后...'
+        let req = new FormData();
+        req.append("text", this.answerText);
+        await axios.post(config.chatTranslateUrl, req).then((res) => {
+          if (res.data.result) {
+            this.originalText = res.data.data;
+            this.isEn = false;
+            this.viewsTranslateText = "查看原文";
+            this.chatLoading = false;
+          } else {
+            this.$message.warning("翻译失败,请重试");
+          }
+        });
+      } else if (!this.isEn && this.originalText) {
+        this.loadingText = "回答中,请稍后...";
         this.isEn = true;
         this.viewsTranslateText = "查看翻译";
       } else {
@@ -135,24 +137,12 @@ const accuracyTest = {
       if (!this.questionsValue)
         return this.$message.warning("测试问题不能为空");
 
-      this.chatLoading = true;
+      this.chatResult = true;
       this.testResultLoading = true;
-      this.originalText = ""
-      this.isEn =  true
+      this.answerText = "";
+      this.originalText = "";
+      this.isEn = true;
       this.viewsTranslateText = "查看翻译";
-      // 对话
-      let chatReqData = {
-        chatId: "",
-        stream: false,
-        // stream: true,
-        detail: false,
-        messages: [
-          {
-            content: this.questionsValue,
-            role: "user",
-          },
-        ],
-      };
 
       // 搜索测试
       setTimeout(async () => {
@@ -175,16 +165,175 @@ const accuracyTest = {
         }
       }, 100);
 
-      const chatRes = await reqChatCompletions(chatReqData);
-      this.answerText = chatRes.choices[0].message.content;
-      this.chatLoading = false;
+      // 对话
+      this.chatDialogue();
+    },
+    // 对话
+    async chatDialogue() {
+      let chatReqData = {
+        chatId: "",
+        // stream: false,
+        stream: true,
+        detail: true,
+        messages: [
+          {
+            content: this.questionsValue,
+            role: "user",
+          },
+        ],
+      };
+      const response = await window.fetch(config.chatCompletionsUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + config.authorization,
+        },
+        // signal: abortSignal.signal,
+        body: JSON.stringify({
+          ...chatReqData,
+        }),
+      });
 
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
 
+      parseStreamChunk = (value) => {
+        const chunk = decoder.decode(value);
+        const chunkLines = chunk.split("\n\n").filter((item) => item);
+        const chunkResponse = chunkLines.map((item) => {
+          const splitEvent = item.split("\n");
+          if (splitEvent.length === 2) {
+            return {
+              event: splitEvent[0].replace("event: ", ""),
+              data: splitEvent[1].replace("data: ", ""),
+            };
+          }
+          return {
+            event: "",
+            data: splitEvent[0].replace("data: ", ""),
+          };
+        });
+
+        return chunkResponse;
+      };
+      class SSEParseData {
+        storeReadData = "";
+        storeEventName = "";
+
+        parse(item) {
+          if (item.data === "[DONE]")
+            return { eventName: item.event, data: item.data };
+
+          if (item.event) {
+            this.storeEventName = item.event;
+          }
+
+          try {
+            const formatData = this.storeReadData + item.data;
+            const parseData = JSON.parse(formatData);
+            const eventName = this.storeEventName;
+
+            this.storeReadData = "";
+            this.storeEventName = "";
+
+            return {
+              eventName,
+              data: parseData,
+            };
+          } catch (error) {
+            if (
+              typeof item.data === "string" &&
+              !item.data.startsWith(": ping")
+            ) {
+              this.storeReadData += item.data;
+            } else {
+              this.storeReadData = "";
+            }
+          }
+          return {};
+        }
+      }
+
+      const sseResponseEventEnum = {
+        error: "error",
+        answer: "answer",
+        moduleStatus: "moduleStatus",
+        appStreamResponse: "appStreamResponse", // sse response request
+      };
+
+      let responseText = "";
+      let errMsg = "";
+      let responseData = [];
+
+      const parseData = new SSEParseData();
+
+      const read = async () => {
+        try {
+          const { done, value } = await reader.read();
+          if (done) {
+            if (response.status === 200 && !errMsg) {
+              this.chatResult = false;
+              return resolve({
+                responseText,
+                responseData,
+              });
+            } else {
+              return reject({
+                message: errMsg || "响应过程出现异常~",
+                responseText,
+              });
+            }
+          }
+          const chunkResponse = parseStreamChunk(value);
+          chunkResponse.forEach((item) => {
+            // parse json data
+            const { eventName, data } = parseData.parse(item);
+            if (eventName === "answer") {
+              const answer = data?.choices?.[0]?.delta?.content || "";
+              this.answerText += answer;
+              // console.log(answer);
+            }
+
+            if (!eventName || !data) return;
+
+            if (
+              eventName === sseResponseEventEnum.answer &&
+              data !== "[DONE]"
+            ) {
+              const answer = data?.choices?.[0]?.delta?.content || "";
+              // onMessage({ text: answer });
+              responseText += answer;
+            } else if (
+              eventName === sseResponseEventEnum.moduleStatus &&
+              data?.name &&
+              data?.status
+            ) {
+              // onMessage(data);
+            } else if (
+              eventName === sseResponseEventEnum.appStreamResponse &&
+              Array.isArray(data)
+            ) {
+              responseData = data;
+            } else if (eventName === sseResponseEventEnum.error) {
+              errMsg = getErrText(data, "流响应错误");
+            }
+          });
+          read();
+        } catch (err) {
+          if (err?.message === "The user aborted a request.") {
+            return resolve({
+              responseText,
+              responseData,
+            });
+          }
+        }
+      };
+      read();
     },
   },
   computed: {
-    disabled(){
-      return this.chatLoading || this.testResultLoading
-    }
-  }
+    disabled() {
+      return this.chatResult || this.testResultLoading;
+    },
+  },
 };

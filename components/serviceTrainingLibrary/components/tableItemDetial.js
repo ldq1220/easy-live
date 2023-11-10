@@ -6,9 +6,9 @@ const tableItemDetial = {
             {{tableRowData.name}}
           </div>
           <div class="table_item_detial_header flex">
-            <el-row v-if="tableRowData.name === '系统问答库'">
+            <el-row v-if="tableRowData.isSystem">
               <el-button type="primary" @click="openSystemFaqDrillDialog">
-                <i class="iconfont icon-baxin icon"></i>系统问答库训练
+                <i class="iconfont icon-baxin icon"></i>企业知识模型训练
               </el-button>
               <div class="completeness flex" >
                 <span class="completeness_text">完成度</span>
@@ -22,7 +22,7 @@ const tableItemDetial = {
                   <i class="iconfont icon-sousuo cursor" @click="handleSearch"></i>
                 </template>
               </el-input>
-              <el-button type="success" @click="openAddEditDialog('add')" v-if="tableRowData.name !== '系统问答库'">
+              <el-button type="success" @click="openAddEditDialog('add')" v-if="!tableRowData.isSystem">
                   <i class="iconfont icon-jia icon"></i>添加
               </el-button>
             </el-row>
@@ -89,32 +89,39 @@ const tableItemDetial = {
       // 分页
       pageNum: 1,
       total: 0,
-      loading:false
+      loading: false,
     };
   },
-  props: ["tableRowData", "isPopup"],
+  props: ["tableRowData", "isPopup", "isSystem"],
   mounted() {
-    if(this.tableRowData.name === '系统问答库'){
+    if (this.tableRowData.isSystem) {
       this.getQuestionLibraryList(); // 获取 系统问答库总列表
+    } else {
+      this.getQuestionList(); // 获取系统问答库 数据集的数据列表
     }
-    this.getQuestionList()  // 获取系统问答库 数据集的数据列表
   },
   methods: {
     // 获取 系统问答库总列表
     async getQuestionLibraryList() {
+      this.loading = true;
+
       await axios.get(config.questionLibraryListUrl).then((res) => {
         this.questionLibraryList = res.data;
-        // this.getQuestionList(); // 获取系统问答库 数据集的数据列表
-        if (!this.searchValue.trim() && this.questionIds.length !== 0 && this.questionLibraryList.length !== 0) {
+        this.getQuestionList(); // 获取系统问答库 数据集的数据列表
+        if (
+          !this.searchValue.trim() &&
+          this.questionIds.length !== 0 &&
+          this.questionLibraryList.length !== 0
+        ) {
           this.percentage = Math.round(
-              (this.questionIds.length / this.questionLibraryList.length) * 100
+            (this.questionIds.length / this.questionLibraryList.length) * 100
           );
         }
       });
     },
     // 获取系统问答库 数据集的数据列表
     async getQuestionList() {
-      this.loading = true
+      this.loading = true;
       let reqData = {
         pageNum: this.pageNum,
         pageSize: 9,
@@ -138,22 +145,27 @@ const tableItemDetial = {
         this.questionIds = data.questionIds;
         this.total = data.total;
 
-        if (!this.searchValue.trim() && this.questionIds.length !== 0 && this.questionLibraryList.length !== 0) {
+        if (
+          !this.searchValue.trim() &&
+          this.questionIds.length !== 0 &&
+          this.questionLibraryList.length !== 0
+        ) {
           this.percentage = Math.round(
             (this.questionIds.length / this.questionLibraryList.length) * 100
           );
         }
 
-
         if (this.isPopup && this.percentage !== 100) {
           this.systemFaqDrillDialogVisible = true;
         } else {
+          if (!this.isSystem) {
+            this.systemFaqDrillDialogVisible = false;
+          }
           this.$emit("cancel");
-          this.systemFaqDrillDialogVisible = false;
         }
       }
 
-      this.loading = false
+      this.loading = false;
     },
     //删除数据集中的数据
     deleteQuestion(id) {
@@ -201,7 +213,7 @@ const tableItemDetial = {
       this.systemFaqDrillDialogVisible = true;
     },
     closeSystemFaqDrillDialog() {
-      this.$emit("cancel")
+      this.$emit("cancel");
       this.systemFaqDrillDialogVisible = false;
     },
     // 返回

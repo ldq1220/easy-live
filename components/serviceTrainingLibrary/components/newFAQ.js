@@ -1,8 +1,8 @@
 const newFAQ = {
   template: `
-      <el-dialog v-model="dialogVisible" title="新建FAQ库" width="40%" @close="closeDialog" align-center>
+      <el-dialog v-model="dialogVisible" title="新建知识库" width="40%" @close="closeDialog" align-center>
           <div class="flex">
-            <div style="width:120px;">FAQ库名称</div>
+            <div style="width:120px;">知识库名称</div>
             <el-input v-model="faqName" placeholder="输入名称" class="input-with-select"></el-input>
           </div>
           <template #footer>

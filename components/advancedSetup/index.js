@@ -9,22 +9,22 @@ const advancedSetup = {
         <div class="setup_item_box" >
             <div class="setup_item_title font_weight">搜索参数调整</div>
             <div class="setup_item flex2">
-                <div class="setup_item_label font_weight" style="width:100px">相似度</div>
+                <div class="setup_item_label font_weight" style="width:100px;text-align: left;">相似度</div>
                 <div style="width:30px">0</div>
                 <el-slider v-model="similarityValue" :mix="0" :max="1" :step="0.1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">1</div>
             </div>
-            <div style="text-align: left;color: #808080;margin: 10px 0 0 30px">客户问题搜索的答案与客服训练库的匹配度，数值越小匹配度越低，数值越高匹配度越高。</div>
-            <div style="text-align: left;color: #808080;margin: 10px 0 0 30px"><span style="color: #fc4949;">注意：</span>相似度过高时，可能搜索不到对应的答案，就会进行空搜索回复，建议设置在0.5~0.8之间。</div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 0 110px"><i style="margin-right: 10px;position: relative;top: 1px;" class="iconfont icon-wenhao"></i>客户问题搜索的答案与客服训练库的匹配度，数值越小匹配度越低，数值越高匹配度越高。</div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 0 137px"><span style="color: #fc4949;">注意：</span>相似度过高时，可能搜索不到对应的答案，就会进行空搜索回复，建议设置在0.5~0.8之间。</div>
             <div class="setup_item flex2 search_num">
-                <div class="setup_item_label font_weight" style="width:100px">单次搜索量</div>
+                <div class="setup_item_label font_weight" style="width:100px;text-align: left;">单次搜索量</div>
                 <div style="width:30px">1</div>
                 <el-slider v-model="searchNumValue" :mix="1" :max="20" :step="1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">20</div>
             </div>
-            <div style="text-align: left;color: #808080;margin: 10px 0 40px 30px">客户问题搜索的答案数量。</div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 40px 110px"><i style="margin-right: 10px;position: relative;top: 1px;" class="iconfont icon-wenhao"></i>客户问题搜索的答案数量。</div>
              <div class="setup_item flex2 flex_start">
-                <div class="setup_item_label font_weight" style="width:100px">空搜索回复</div>
+                <div class="setup_item_label font_weight" style="width:100px;text-align: left;">空搜索回复</div>
                 <div>
                     <el-input
                         v-model="emtpyContentValue"
@@ -45,21 +45,21 @@ const advancedSetup = {
         <div class="setup_item_box">
             <div class="setup_item_title font_weight">AI高级设置</div>
             <div class="setup_item flex2">
-                <div class="setup_item_label font_weight" style="width:100px">温度</div>
+                <div class="setup_item_label font_weight" style="width:130px;text-align: left;">温度</div>
                 <div style="width:30px;transform: translateX(-20px);">严谨</div>
                 <el-slider v-model="temperatureValue" :mix="0" :max="1" :step="0.1" style="width:400px"/>
                 <div style="width:30px;margin-left:16px">发散</div>
             </div>
-            <div style="text-align: left;color: #808080;margin: 10px 0 40px 40px">温度数值影响到AI人性化回复</div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 40px 110px"><i style="margin-right: 10px;position: relative;top: 1px;" class="iconfont icon-wenhao"></i>温度数值影响到AI人性化回复</div>
              <div class="setup_item flex2 " style="margin-top:40px">
-                <div class="setup_item_label font_weight" style="width:100px">AI语言</div>
+                <div class="setup_item_label font_weight" style="width:130px;text-align: left;">AI语言</div>
                 <div>
                 <el-select v-model="langSelect"  style="width:160px;transform: translateX(-20px);">
                     <el-option label="英语" value="英语" />
                 </el-select>
                 </div>
             </div>
-            <div style="text-align: left;color: #808080;margin: 10px 0 40px 40px">选择该语言后，AI会用所选的语言进行回复。</div>
+            <div style="text-align: left;color: #808080;margin: 10px 0 40px 110px"><i style="margin-right: 10px;position: relative;top: 1px;" class="iconfont icon-wenhao"></i>选择该语言后，AI会用所选的语言进行回复。</div>
         </div>
         
         <div class="advanced_setup_btns flex" style="margin-top:20px">
@@ -99,7 +99,10 @@ const advancedSetup = {
         this.searchNumValue = data.limit;
         this.emtpyContentValue = data.emptyText;
         this.temperatureValue = data.temperature;
-        this.langSelect = data.systemPrompt.split("[")[1].split("]")[0];
+        if (data.systemPrompt.includes("[") && data.systemPrompt.includes("]"))
+          this.langSelect = data.systemPrompt.split("[")[1].split("]")[0];
+        else
+          this.langSelect = '英语';
         if(type){
           this.$message({
             type: "success",
@@ -117,7 +120,7 @@ const advancedSetup = {
         limit: this.searchNumValue,
         emptyText: this.emtpyContentValue,
         temperature: this.temperatureValue,
-        systemPrompt: `你必须要用[${this.langSelect}]回复`,
+        systemPrompt: `你是外贸企业或生产厂家的在线专业客服，请使用[${this.langSelect}]回复访客的问题，内容尽量简洁。`,
       };
 
       this.updateSetup(reqData, "save");
@@ -130,7 +133,7 @@ const advancedSetup = {
         emptyText:
           "Sorry, I can't answer your question at the moment, a member of staff will contact you later",
         temperature: 0,
-        systemPrompt: "你必须要用[英语]回复",
+        systemPrompt: "你是外贸企业或生产厂家的在线专业客服，请使用[英语]回复访客的问题，内容尽量简洁。",
       };
 
       this.updateSetup(reqData, "default");

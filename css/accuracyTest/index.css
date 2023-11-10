@@ -19,14 +19,27 @@
   border-radius: 5px;
 }
 .accuracy_faq .questions_form {
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  width: 100%;
 }
 .accuracy_faq .answer_content {
-  flex-grow: 1;
+  width: 100%;
+  /* flex-grow: 1; */
 }
 .answer_content_text {
+  width: 100%;
   margin-top: 10px;
   color: #808080;
+}
+.answer_content_text .answer_content_text_span:last-child::after {
+  display: inline-block;
+  content: "";
+  width: 4px;
+  height: 14px;
+  transform: translate(4px, 2px) scaleY(1.3);
+  background-color: #a36df8;
+  border-radius: 2px;
+  animation: answer_content_text_span_blink 1s infinite; /* 1s 是动画周期，infinite 表示无限循环 */
 }
 .answer_content.isEN {
   margin-left: 16px;
@@ -46,6 +59,18 @@
 }
 .views_translate:hover {
   color: #7728f5;
+}
+
+@keyframes answer_content_text_span_blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* 测试结果分析 */
@@ -95,7 +120,4 @@
 .test_result_analyse_content_item_answer .answer_text {
   -webkit-line-clamp: 5;
   color: #808080;
-}
-.isEn{
-  margin-left: 18px;
 }

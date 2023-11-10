@@ -1,6 +1,6 @@
 const systemFaqDrillDialog = {
   template: `
-            <el-dialog v-model="dialogVisible" title="系统问答库" width="827px" @open="openDialog" @close="closeDialog" align-center :before-close="handleClose">
+            <el-dialog v-model="dialogVisible" title="客户常见问题库" width="827px" @open="openDialog" @close="closeDialog" align-center :before-close="handleClose">
                 <div class="system_faq_drill_completeness flex2">
                   <span class="completeness_text">完成度</span>
                   <el-progress :percentage="percentage"  :stroke-width="16" color="#67C23A" style="width:300px" />
@@ -221,16 +221,6 @@ const systemFaqDrillDialog = {
       this.questionLibraryIndex = 0;
       this.questionLibraryCruuent =
         this.filterQuestionLibraryList[this.questionLibraryIndex];
-
-      console.log(
-        "this.filterQuestionLibraryList-----",
-        this.filterQuestionLibraryList
-      );
-      console.log(
-        "this.questionLibraryList+++++++++",
-        this.questionLibraryList
-      );
-      console.log("this.questionIds============", this.questionIds);
     },
 
     // 关闭弹窗

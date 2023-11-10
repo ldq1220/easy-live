@@ -3,7 +3,7 @@ const serviceTrainingLibrary = {
       <div class="service_training_library" v-loading="operateLoading"  element-loading-text="数据处理中，请稍候...">
         <div class="service_training_library_header flex space_between" v-if="!showDetail"> 
             <el-button type="primary" @click="openSystemFaqDrillDialog">
-              <i class="iconfont icon-baxin icon"></i>系统问答库训练
+              <i class="iconfont icon-baxin icon"></i>企业知识模型训练
             </el-button>
             
             <div class="flex">
@@ -17,7 +17,7 @@ const serviceTrainingLibrary = {
                     <template #dropdown>
                         <el-dropdown-menu>
                           <el-dropdown-item  @click="handleOpenDialog('newFAQ')">
-                              <i class="iconfont icon-xinjian"></i>新建FAQ库
+                              <i class="iconfont icon-xinjian"></i>新建知识库
                           </el-dropdown-item>
                           <el-dropdown-item  @click="handleOpenDialog('asyncFAQ')"> 
                               <i class="iconfont icon-tongbu"></i>同步旧FAQ
@@ -29,10 +29,10 @@ const serviceTrainingLibrary = {
         </div>
 
         <div class="service_training_library_table" v-if="!showDetail"  v-loading="loading"  element-loading-text="数据加载中，请稍候...">
-            <el-table :data="tableData" row-class-name="table_row_item cursor"  height="400" style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
+            <el-table :data="tableData" border row-class-name="table_row_item cursor"  height="400" style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
                 <el-table-column type="index" label="#" align="center" />
-                <el-table-column prop="name" label="名称" align="center" />
-                <el-table-column prop="dataAmount" label="数据总量" align="center" />
+                <el-table-column prop="name" label="名称" align="center"/>
+                <el-table-column prop="dataAmount" label="数据总量" align="center"/>
                 <el-table-column prop="trainingAmount" label="状态" align="center">
                   <template #default="scope">
                     <div style="height:28px;line-height:28px ;">
@@ -42,6 +42,7 @@ const serviceTrainingLibrary = {
                     </div>
                   </template>
                 </el-table-column>
+                <el-table-column prop="updateTime" label="时间" align="center"/>
                 <el-table-column  label="操作" align="center">
                     <template #default="scope">
                         <i class="iconfont icon-shanchu delete_icon " style="color:#FD4D4F;" v-if="!scope.row.isSystem" @click.stop="handleDelete(scope.row._id)"></i>
@@ -56,7 +57,7 @@ const serviceTrainingLibrary = {
       <async-faq :dialogVisible="asyncFaqDialogVisible" :tableData="tableData" @closenewfaq="closeNewFAQ" @getDatasetList="getDatasetList"></async-faq>
       <split-qa :dialogVisible="splitQaDialogVisible" @closenewfaq="closeNewFAQ"></split-qa>
 
-      <table-item-detial v-if="showDetail" :isPopup="isPopup" :tableRowData="tableRowData" @returnHome="returnHome" @cancel="cancel"/>
+      <table-item-detial v-if="showDetail" :isPopup="isPopup" :isSystem="isSystem" :tableRowData="tableRowData" @returnHome="returnHome" @cancel="cancel"/>
     `,
 
   data() {
@@ -71,7 +72,8 @@ const serviceTrainingLibrary = {
       splitQaDialogVisible: false,
       showDetail: false, // 是否显示 列表详情
       isPopup: false, // 是否 自动弹出 问答库训练弹窗
-      loading: false,
+      isSystem: true, // 系统问答库
+      loading:false,
       operateLoading: false,
     };
   },
@@ -81,13 +83,13 @@ const serviceTrainingLibrary = {
   methods: {
     // 获取数据集列表
     async getDatasetList() {
-      this.loading = true;
+      this.loading = true
 
       let res = await reqDatasetList({
         pageNum: 1,
         pageSize: 10,
         datasetId: config.datasetId,
-        // searchText: this.searchValue,
+        searchText: this.searchValue,
       });
       const { code, data } = res;
       if (code == 200) {
@@ -99,7 +101,7 @@ const serviceTrainingLibrary = {
         this.tableData = data.data;
         this.tableDataLength = data.data.length;
       }
-      this.loading = false;
+      this.loading = false
     },
     handleClick() {
       this.$emit("fatherEmit", "this.data");
@@ -122,6 +124,7 @@ const serviceTrainingLibrary = {
     imgSelected(row, event, column) {
       Object.assign(this.tableRowData, row);
       this.showDetail = true;
+      this.isSystem = row.isSystem;
     },
     returnHome() {
       this.showDetail = false;
@@ -131,12 +134,12 @@ const serviceTrainingLibrary = {
     // 系统问答库训练 弹窗
     openSystemFaqDrillDialog() {
       this.tableData.forEach((item) => {
-        if (item.name === "系统问答库") {
+        if (item.isSystem) {
           this.tableRowData = item;
         }
       });
-      this.isPopup = true;
       this.showDetail = true;
+      this.isPopup = true;
     },
     // 取消 系统问答库训练弹窗 自动弹出
     cancel() {
