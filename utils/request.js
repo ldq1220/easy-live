@@ -26,6 +26,7 @@ request.interceptors.response.use(
   (error) => {
     // 失败回调
     let message = error.response.data.message;
+    console.log(message);
 
     return error.response.data; // 返回响应数据或错误信息的包装器
   }
