@@ -135,8 +135,8 @@ const serviceTrainingLibrary = {
           this.tableRowData = item;
         }
       });
-      this.showDetail = true;
       this.isPopup = true;
+      this.showDetail = true;
     },
     // 取消 系统问答库训练弹窗 自动弹出
     cancel() {

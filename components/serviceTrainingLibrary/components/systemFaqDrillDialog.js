@@ -39,7 +39,7 @@ const systemFaqDrillDialog = {
                               <el-radio :label="1" size="large">使用官方推荐回答</el-radio>
                             </el-radio-group>
                           </div>
-                          <div class="iconfont icon-fuzhi copy" @click="copyContent"></div>
+                          <div class="iconfont icon-fuzhi copy" id="copyButton" @click="copyContent" v-show="radio === 1"></div>
                         </el-row>
 
                         <el-row>
@@ -100,6 +100,7 @@ const systemFaqDrillDialog = {
       questionLibraryCruuent: {}, // 当前 问答项 数据
       questionIdsLength: 0,
       filterQuestionLibraryList: [], // 过滤出来的 系统问答库列表
+      clipboard: null, //  clipboard.js 库 实例
     };
   },
   props: [
@@ -116,16 +117,26 @@ const systemFaqDrillDialog = {
     openDialog() {
       this.questionIdsLength = this.questionIds.length;
       this.filterQuestionList(); // 获取用户当前 展示数据项的下标
-    },
-    // 复制 官方推荐回答
-    copyContent() {
+
+      // 给复制按钮 绑定复制事件
       let copyText = document.getElementById("myInput");
-      navigator.clipboard.writeText(copyText.value);
-      this.$message.success("官方推荐回答内容已复制");
-      this.radio = 0;
-      this.answerValue = copyText.value;
-      this.answerValueEn = "加入问答库后AI自动翻译";
+      let copyButton = document.getElementById("copyButton");
+      let that = this;
+      // 初始化clipboard.js
+      that.clipboard = new ClipboardJS(copyButton, {
+        text: function () {
+          return copyText.value;
+        },
+      });
+
+      that.clipboard.on("success", function (e) {
+        that.$message.success("官方推荐回答内容已复制");
+        that.radio = 0;
+        that.answerValue = copyText.value;
+        that.answerValueEn = "加入问答库后AI自动翻译";
+      });
     },
+
     // 加入问答库
     async handleAddQuestionList() {
       if (!this.answerValue) return this.$message.error("回答内容不能为空");
@@ -165,10 +176,9 @@ const systemFaqDrillDialog = {
           this.answerValueEn = this.questionLibraryCruuent.answerEn;
 
           this.radio = 0;
-          this.answerValue = ''
+          this.answerValue = "";
 
           this.$message.success("加入问答库成功,请继续");
-
         }
 
         this.loading = false;
@@ -211,12 +221,23 @@ const systemFaqDrillDialog = {
       this.questionLibraryIndex = 0;
       this.questionLibraryCruuent =
         this.filterQuestionLibraryList[this.questionLibraryIndex];
+
+      console.log(
+        "this.filterQuestionLibraryList-----",
+        this.filterQuestionLibraryList
+      );
+      console.log(
+        "this.questionLibraryList+++++++++",
+        this.questionLibraryList
+      );
+      console.log("this.questionIds============", this.questionIds);
     },
 
     // 关闭弹窗
     closeDialog() {
       if (this.loading) return;
 
+      this.clipboard.destroy(); // 销毁复制 实例
       this.filterQuestionLibraryList = [];
       this.$emit("closeSystemFaqDrillDialog");
     },
