@@ -1,0 +1,28 @@
+.comment_record {
+  padding: 40px;
+  display: block;
+}
+
+.comment_record_table .op_icon {
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+  width: 41px;
+  height: 23px;
+  line-height: 23px;
+  border-radius: 4px;
+  background-color: rgba(245, 245, 245, 1);
+  color: rgba(16, 16, 16, 1);
+  font-size: 14px;
+  text-align: center;
+  margin-right: 20px;
+}
+.comment_record_table .op_icon:hover {
+  transform: scale(1.1);
+}
+.comment_record_table .el-loading-spinner {
+  top: 50%;
+}
+.comment_record_table .el-loading-spinner .circular {
+  width: 20px;
+  height: 20px;
+}

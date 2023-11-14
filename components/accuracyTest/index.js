@@ -55,7 +55,7 @@ const accuracyTest = {
         <div class="test_result_analyse"> 
           <div class="test_result_analyse_title font_weight">测试结果分析</div>
           <div class="test_result_analyse_content flex flex_wrap" v-loading="testResultLoading" element-loading-text="测试中，请稍候...">
-            <div class="test_result_analyse_content_item" v-for="(item,index) in testResultData" :key="item.id">
+            <div class="test_result_analyse_content_item" v-for="(item,index) in testResultData" :key="item.id" @click="openAddEditDialog('edit',item,index)">
               <div class="test_result_analyse_content_item_similarity flex">
                 <span class="font_weight">#{{index + 1}}</span>
                 <el-progress :percentage="item.score * 100" style="width:100%;margin-left:40px">
@@ -80,6 +80,7 @@ const accuracyTest = {
         </div>
       </div>
    
+      <faq-add-edit-dialog :dialogVisible="faqAddEditDialogVisible" :type="type" :index="index"  :faqdata="faqdata"  :pageNum="1" @closeAddEditDialog="closeAddEditDialog" @getQuestionList="getQuestionList"></faq-add-edit-dialog>
     `,
 
   data() {
@@ -95,10 +96,19 @@ const accuracyTest = {
       chatLoading: false,
       chatResult: false,
       loadingText: "回答中,请稍后...",
+      // 编辑弹窗
+      faqAddEditDialogVisible: false,
+      type: "edit",
+      faqdata: {},
+      index: 0,
     };
   },
-  props: [""],
-  mounted() {},
+  props: ["message", "accuracyText"],
+  mounted() {
+    if (this.accuracyText) {
+      this.questionsValue = this.accuracyText;
+    }
+  },
   methods: {
     // 查看翻译
     async viewsTranslate() {
@@ -291,7 +301,6 @@ const accuracyTest = {
             if (eventName === "answer") {
               const answer = data?.choices?.[0]?.delta?.content || "";
               this.answerText += answer;
-              // console.log(answer);
             }
 
             if (!eventName || !data) return;
@@ -329,6 +338,23 @@ const accuracyTest = {
         }
       };
       read();
+    },
+    // 编辑
+    openAddEditDialog(type, item, index) {
+      this.type = "testEdit";
+
+      this.faqdata = {
+        ...item,
+        questionsEn: item.q,
+        questionsCn: item.qCn,
+        answersCn: item.answer,
+        answersEn: item.a,
+      };
+      this.index = index + 1;
+      this.faqAddEditDialogVisible = true;
+    },
+    closeAddEditDialog() {
+      this.faqAddEditDialogVisible = false;
     },
   },
   computed: {

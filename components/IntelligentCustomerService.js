@@ -18,7 +18,8 @@ const IntelligentCustomerService = {
         <el-tabs v-model="activeName" class="demo-tabs">
             <el-tab-pane label="客服训练库" name="first"></el-tab-pane>
             <el-tab-pane label="准确度测试" name="second"></el-tab-pane>
-            <el-tab-pane label="高级设置" name="third"></el-tab-pane>
+            <el-tab-pane label="评论记录" name="third"></el-tab-pane>
+            <el-tab-pane label="高级设置" name="fourthly"></el-tab-pane>
         </el-tabs>
 
       </div>
@@ -29,10 +30,14 @@ const IntelligentCustomerService = {
           </div>
 
           <div class="accuracy_test"  v-if="activeName === 'second'">
-            <accuracy-test></accuracy-test>
+            <accuracy-test :accuracyText="accuracyText"></accuracy-test>
           </div>
 
-          <div class="advanced_setup"  v-if="activeName === 'third'">
+          <div class="comment_record"  v-if="activeName === 'third'" >
+            <comment-record @gotoAccuracyTest="gotoAccuracyTest"></comment-record>
+          </div>
+
+          <div class="advanced_setup"  v-if="activeName === 'fourthly'">
              <advanced-setup  @gotoAccuracyTest="gotoAccuracyTest"></advanced-setup>
           </div>
         </el-scrollbar> 
@@ -43,6 +48,7 @@ const IntelligentCustomerService = {
     return {
       activeName: "first",
       isInitialize: false, // 是 初始化
+      accuracyText: "",
     };
   },
   mounted() {
@@ -67,7 +73,10 @@ const IntelligentCustomerService = {
     handleClick() {
       this.$emit("fatherEmit", "this.data");
     },
-    gotoAccuracyTest() {
+    gotoAccuracyTest(message) {
+      if (message) {
+        this.accuracyText = message;
+      }
       this.activeName = "second";
     },
   },

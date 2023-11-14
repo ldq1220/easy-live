@@ -61,11 +61,20 @@
 .service_training_library_table {
   border: 1px solid #e5e5e5;
 }
-.service_training_library_table .delete_icon {
+.service_training_library_table .op_icon {
   display: inline-block;
   transition: all 0.3s ease-in-out;
+  width: 41px;
+  height: 23px;
+  line-height: 23px;
+  border-radius: 4px;
+  background-color: rgba(245, 245, 245, 1);
+  color: rgba(16, 16, 16, 1);
+  font-size: 14px;
+  text-align: center;
+  margin-right: 20px;
 }
-.service_training_library_table .delete_icon:hover {
+.service_training_library_table .op_icon:hover {
   transform: scale(1.3);
 }
 .faq_table_name_column {

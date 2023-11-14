@@ -31,7 +31,12 @@ const serviceTrainingLibrary = {
         <div class="service_training_library_table" v-if="!showDetail"  v-loading="loading"  element-loading-text="数据加载中，请稍候...">
             <el-table :data="tableData" border row-class-name="table_row_item cursor"  height="400" style="width: 100%" @row-click="imgSelected" :header-cell-style="{ background: '#F7F7F7', color: '#606266' }">
                 <el-table-column type="index" label="#" align="center" />
-                <el-table-column prop="name" label="名称" align="center"/>
+                <el-table-column prop="name" label="名称" align="center">
+                  <template #default="scope">
+                    <span v-if="!scope.row.updateStatus"> {{ scope.row.name }} </span>
+                    <el-input v-model="nameValue" placeholder="请输入数据集名称" ref="updateNameInput" @blur="updateName(scope.row._id,'blur')" @keyup.enter="updateName(scope.row._id,'enter')" v-else>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="dataAmount" label="数据总量" align="center"/>
                 <el-table-column prop="trainingAmount" label="状态" align="center">
                   <template #default="scope">
@@ -45,7 +50,8 @@ const serviceTrainingLibrary = {
                 <el-table-column prop="updateTime" label="时间" align="center"/>
                 <el-table-column  label="操作" align="center">
                     <template #default="scope">
-                        <i class="iconfont icon-shanchu delete_icon " style="color:#FD4D4F;" v-if="!scope.row.isSystem" @click.stop="handleDelete(scope.row._id)"></i>
+                        <i class="iconfont icon-bianji op_icon" style="color:#34C758 ;" @click.stop="handleUptate(scope.row)"></i>
+                        <i class="iconfont icon-shanchu op_icon delete_icon " style="color:#FD4D4F;" v-if="!scope.row.isSystem" @click.stop="handleDelete(scope.row._id)"></i>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,6 +70,7 @@ const serviceTrainingLibrary = {
     return {
       activeName: "first",
       searchValue: "", // 搜索框 value
+      nameValue: "",
       tableData: [],
       tableDataLength: "",
       tableRowData: {},
@@ -73,7 +80,7 @@ const serviceTrainingLibrary = {
       showDetail: false, // 是否显示 列表详情
       isPopup: false, // 是否 自动弹出 问答库训练弹窗
       isSystem: true, // 系统问答库
-      loading:false,
+      loading: false,
       operateLoading: false,
     };
   },
@@ -83,7 +90,7 @@ const serviceTrainingLibrary = {
   methods: {
     // 获取数据集列表
     async getDatasetList() {
-      this.loading = true
+      this.loading = true;
 
       let res = await reqDatasetList({
         pageNum: 1,
@@ -97,11 +104,12 @@ const serviceTrainingLibrary = {
           item.updateTime = dayjs(item.updateTime).format(
             "YYYY-MM-DD HH:mm:ss"
           );
+          item.updateStatus = false;
         });
         this.tableData = data.data;
         this.tableDataLength = data.data.length;
       }
-      this.loading = false
+      this.loading = false;
     },
     handleClick() {
       this.$emit("fatherEmit", "this.data");
@@ -122,9 +130,12 @@ const serviceTrainingLibrary = {
     },
     // 点击表格某一行
     imgSelected(row, event, column) {
-      Object.assign(this.tableRowData, row);
-      this.showDetail = true;
-      this.isSystem = row.isSystem;
+      if (event.label === "名称" && this.updateStatus) {
+      } else {
+        Object.assign(this.tableRowData, row);
+        this.showDetail = true;
+        this.isSystem = row.isSystem;
+      }
     },
     returnHome() {
       this.showDetail = false;
@@ -144,6 +155,46 @@ const serviceTrainingLibrary = {
     // 取消 系统问答库训练弹窗 自动弹出
     cancel() {
       this.isPopup = false;
+    },
+    // 编辑
+    handleUptate(row) {
+      this.updateStatus = true;
+      this.tableData.forEach((item) => {
+        if (item._id == row._id) {
+          this.nameValue = item.name;
+          item.updateStatus = true;
+        }
+      });
+
+      this.$nextTick(() => {
+        this.$refs.updateNameInput.focus();
+      });
+    },
+    // 更新名称
+    async updateName(id, type) {
+      this.loading = true;
+
+      this.tableData.forEach((item) => {
+        if (item._id == id) {
+          item.updateStatus = false;
+        }
+      });
+
+      let req = {
+        id: id,
+        name: this.nameValue,
+      };
+
+      let res = null;
+
+      if (type === "blur") {
+        res = await reqUpdateDataset(req);
+        const { code } = res;
+        if (code === 200) {
+          this.getDatasetList();
+          this.$message.success("修改成功");
+        }
+      }
     },
     // 删除数据集
     async handleDelete(id) {

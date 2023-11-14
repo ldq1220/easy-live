@@ -2,7 +2,7 @@ const faqAddEditDialog = {
   template: `
           <el-dialog v-model="dialogVisible" title="手动录入" width="827px" @open="openDialog" @close="closeDialog" align-center :before-close="handleClose">
               <div class="faq_add_edit_dialog_content flex" v-loading="loading" element-loading-text="正在进库训练中，请稍候...">
-                  <div class="number font_weight" style="width:70px;">#001</div>
+                  <div class="number font_weight" style="width:70px;color:#808080">#{{ index + 9 * (pageNum - 1)}}</div>
                   <div class="faq_form" style="width:100%">
                     <div class="faq_form_item question">
                       <el-row class="flex">
@@ -90,7 +90,14 @@ const faqAddEditDialog = {
       loading: false,
     };
   },
-  props: ["dialogVisible", "type", "tableRowData", "faqdata"],
+  props: [
+    "dialogVisible",
+    "type",
+    "index",
+    "pageNum",
+    "tableRowData",
+    "faqdata",
+  ],
   methods: {
     openDialog() {
       if (this.type === "add") {
@@ -101,9 +108,16 @@ const faqAddEditDialog = {
         this.answersEn = "";
       } else {
         this.hasAdd = false;
-        this.questionValue = this.faqdata.questionsCn;
+        this.questionValue =
+          this.type === "testEdit"
+            ? filterText(this.faqdata.questionsCn)[0]
+            : this.faqdata.questionsCn;
+        this.questionEn =
+          this.type === "testEdit"
+            ? filterText(this.faqdata.questionsEn)[0]
+            : this.faqdata.questionsEn;
+
         this.answerValue = this.faqdata.answersCn;
-        this.questionEn = this.faqdata.questionsEn;
         this.answersEn = this.faqdata.answersEn;
       }
     },
@@ -116,7 +130,10 @@ const faqAddEditDialog = {
 
       let reqData = {
         datasetId: config.datasetId,
-        collectionId: this.tableRowData._id,
+        collectionId:
+          this.type === "testEdit"
+            ? this.faqdata.collectionId
+            : this.tableRowData._id,
         qCn: this.questionValue,
         q: "",
         aCn: this.answerValue,
@@ -146,11 +163,10 @@ const faqAddEditDialog = {
           : this.$message.success("修改成功");
         this.$emit("getQuestionList");
         this.closeDialog();
-      }else{
-          this.$message.error(res.message)
-          this.loading = false;
+      } else {
+        this.$message.error(res.message);
+        this.loading = false;
       }
-
     },
     // 弹窗关闭前
     closeDialog() {

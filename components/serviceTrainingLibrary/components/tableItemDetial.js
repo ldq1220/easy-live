@@ -61,7 +61,8 @@ const tableItemDetial = {
           
       </div>
 
-      <faq-add-edit-dialog :dialogVisible="faqAddEditDialogVisible" :type="type" :tableRowData="tableRowData" :faqdata="faqdata" @closeAddEditDialog="closeAddEditDialog" @getQuestionList="getQuestionList"></faq-add-edit-dialog>
+      <faq-add-edit-dialog :dialogVisible="faqAddEditDialogVisible" :type="type" :index="
+      index" :pageNum="pageNum" :tableRowData="tableRowData" :faqdata="faqdata" @closeAddEditDialog="closeAddEditDialog" @getQuestionList="getQuestionList"></faq-add-edit-dialog>
 
       <system-faq-dirll-dialog :dialogVisible="systemFaqDrillDialogVisible" :tableRowData="tableRowData" :questionIds="questionIds" :questionLibraryList="questionLibraryList" 
       :percentage="percentage" @closeSystemFaqDrillDialog="closeSystemFaqDrillDialog" @getQuestionList="getQuestionList"></system-faq-dirll-dialog>
@@ -80,6 +81,7 @@ const tableItemDetial = {
         },
       ],
       faqdata: {}, //点击某个问答 当前问答的数据
+      index: 1,
       faqAddEditDialogVisible: false,
       systemFaqDrillDialogVisible: false,
       questionLibraryList: [], // 系统问答库总列表
@@ -188,9 +190,11 @@ const tableItemDetial = {
     openAddEditDialog(type, item) {
       if (type === "add") {
         this.type = "add";
+        this.index = 1;
       } else {
         this.type = "edit";
         this.faqdata = item;
+        this.index = item.index;
       }
       this.faqAddEditDialogVisible = true;
     },

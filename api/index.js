@@ -2,6 +2,7 @@ const API = {
   // INIT_FAST_GPT_URL: "faq/initFastGPT", // 初始化fastGPT
   DATASET_LIST_URL: "core/dataset/collection/list", // 获取数据集列表
   CREATE_COLLECTION_URL: "core/dataset/collection/create", // 创建数据集
+  UPDATE_COLLECTION_URL: "core/dataset/collection/update", // 修改数据集
   DELECT_COLLECTION_URL: "core/dataset/collection/delById", // 删除数据集
   GET_DATA_LIST_URL: "core/dataset/data/getDataList", // 获取数据集的数据列表
   DEL_DATA_BYID_URL: "core/dataset/data/delDataById", // 删除数据集中的数据
@@ -22,6 +23,10 @@ const reqDatasetList = (data) => request.post(API.DATASET_LIST_URL, data);
 // 创建数据集
 const reqCreateDataset = (data) =>
   request.post(API.CREATE_COLLECTION_URL, data);
+
+// 修改数据集
+const reqUpdateDataset = (data) =>
+  request.post(API.UPDATE_COLLECTION_URL, data);
 
 // 删除数据集
 const reqDeleteDataset = (collectionId) =>

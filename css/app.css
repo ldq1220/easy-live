@@ -4,9 +4,10 @@
 } */
 @import url("./loading-icon.css");
 @import url("./initialize.css");
-@import url("./intelligentCustomerService/index.css");
-@import url("./accuracyTest/index.css");
+@import url("./intelligentCustomerService.css");
+@import url("./accuracyTest.css");
 @import url("./advancedSetup.css");
+@import url("./commentRecord.css");
 
 body {
   background-color: #fff;
@@ -52,6 +53,10 @@ i.icon {
   padding: 40px;
   margin: 20px;
   border: 1px solid #e5e5e5;
+}
+.el-dialog__header {
+  border-bottom: 1px solid #bbb;
+  margin-right: 0;
 }
 
 /* 上传 */
